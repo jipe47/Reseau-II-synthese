@@ -1,0 +1,118 @@
+\chapter{Protocoles pour applications multimédias : RTP/RTCP - SIP}
+
+\section{RTP - Real-time Protocol}
+		
+		RTP est un protocole spécifiant une structure pour les paquets transportant des données vidéo ou audio. Il est spécifié par un RFC et tourne dans les systèmes d'extrémités. Le but de ce protocole est de permettre l'interopérabilité entre les périphériques.
+		
+		Les paquets RTP sont encapsulés dans des segments UDP, ils les étendent et fournissent
+		
+		\begin{itemize}
+			\item un identifiant pour le type de donnée (payload)
+			\item un numéro de séquence
+			\item un timestamp.
+		\end{itemize}
+		
+		On a besoin du timestamp ET du numéro de séquence. Cela permettait, lors de l'adaptation du playout delay, de savoir quand un talk spurt commence, et de ne pas le confondre avec une perte de paquets.
+		
+		\dessin{86}
+				
+		RTP reste un protocole du best effort, il n'y a pas de garanties de QoS. Les paquets RTP ne sont pas discriminés par rapport aux autres par les routeurs ; le caractère RTP d'un paquet n'est vu qu'aux systèmes d'extrémité.
+		
+		\dessinS{87}{.8}
+		
+		Les end systems sont les applications qui génèrent et consomment le contenu des paquets RTP. 
+				
+		Un translator est un système intermédiaire qui change le schéma d'encodage sans altérer le timing. Il est utilisé au cas où il faudrait changer le type d'encodage, et peut aussi convertir un stream multicast en plusieurs streams unicast.
+		
+		Un mixer est un système intermédiaire qui peut combiner plusieurs flux. Le nouveau flux généré a son propre timing (un nouveau SSRC).
+		
+		Un SSRC (Synchronisation Source identifier) permet d'identifier la source. S'il y a un mixer, le SSRC l'identifie (et non pas un des flux d'entrées du mixer, vu que c'en est la composition), et on joint à part, dans le CSRC (Contributing Source identifier), des identifiants pour les "vraies" sources.
+			\subsection{Header RTP}
+			
+			Un header RTP contient donc 4 éléments :
+			
+			\begin{itemize}
+				\item le type de donnée (7 bits) : il indique le type d'encodage. Ainsi, si un expéditeur change de schéma d'encodage durant une conversation, c'est un moyen de le faire savoir au récepteur.
+				
+				\item un numéro de séquence (16 bits) : il est incrémenté de 1 pour chaque paquet RTP envoyé, et peut être utilisé pour détecter la perte d'un paquet et restaurer une séquence de paquet.
+				
+				\item un timestamp (32 bits) : généralement, pour l'audio, il incrémente toutes les périodes d'échantillonnage.  Il est relatif, on peut l'utiliser de la manière que l'on souhaite ; la clock continue à augmenter à un rythme constant, même lorsque la source est inactive.
+				
+				\item un SSRC (32 bits) : il identifie la source de chaque stream RTP. Chaque stream dans une session RTP doit en avoir un distinct.
+			\end{itemize}					
+			
+		
+		\section{RTCP - Real Time Control Protocol}
+		
+		RTCP travaille en conjonction avec RTP, ce n'est pas vraiment un protocole pour transporter les données. Il permet, entre des participants, de communiquer des informations sur le streaming (nombre de paquets perdus, de paquets envoyés, le jitter, etc).
+		
+		Ces informations permettent de contrôler les performances, par exemple diminuer le débit s'il y a des pertes de paquets, en changeant le débit de l'encodage, la résolution, en ignorant des images, etc.
+		
+		\dessinS{88}{.85}
+		
+		RTP se scale parfaitement, car c'est un schéma multicast. RTCP moins, car le sender doit gérer tous les récepteurs, il peut être débordé par les arrivées de paquets. Il faudrait pouvoir adapter le rythme de paquets RTCP envoyés par les récepteurs. Plus il y aura de participants, moins il y aura de reports envoyés, afin de ne pas surcharger l'expéditeur.
+		
+		Autre problème : l'hétérogénéité des récepteurs. Certains peuvent recevoir de meilleurs flux que d'autres, et donc demander un plus petit flux, ce qui pénalise les autres récepteurs. Il faut alors une méthode plus sophistiquée, par exemple définir des groupes de récepteur (low et high quality), ou bien donner un stream particulier à un récepteur.
+		
+		%[4-73,74] L'expéditeur utilise aussi RTCP. Il y a un mapping SSRC $\Rightarrow$ current time, nombre de paquets envoyés, etc.
+		
+		Il existe trois types de paquet RTCP :
+		
+		\begin{itemize}
+			\item les Receiver Report (RR) : la fraction de paquets perdus, le dernier numéro de séquence arrivé, le jitter moyen, etc ;
+			\item les Sender Report (SR) : le SSRC du stream RTP, le temps actuel, le nombre de paquet envoyés, le nombre de bytes envoyés, etc ;
+			\item les Source Description (SDES) : e-mail de l'expéditeur, son nom, le SSRC du flux associé. Cela permet donc un mapping entre le SSRC et l'utilisateur/le nom de l'hôte.
+		\end{itemize}
+		
+		RTCP permet de synchroniser des flux différents au sein d'une même session. Les timestamps des paquets RTP sont liés à la vidéo et aux samples audio, et non à une horloge. Chaque paquet RTCP envoyé par l'expéditeur contient le timestamp du paquet RTP et l'heure (horloge) à laquelle le paquet a été créé. Ainsi, les expéditeurs peuvent utiliser cette association pour par exemple synchroniser un flux audio et un flux vidéo venant de périphériques différents.
+		
+		% Synchronisation des timestamps nécessaire pour que les flux soient synchronisés (par exemple un flux audio et un flux vidéo venant de périphériques différents).
+		
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 4-76
+		RTCP va essayer de limiter son trafic à 5\% de la bande passante disponible. Le problème est de connaître le nombre de récepteur ($R$) pour calculer le trafic RTCP
+		
+		 Une solution est que l'expéditeur peut le calculer en fonction des reports RTCP qu'il reçoit, et ensuite l'envoyer à tous les récepteurs via ses RTCP. Le problème est que ce nombre est dynamique.
+		 
+		 Autre solution : lorsqu'un récepteur doit envoyer un report, il n'a qu'à l'envoyer à tous les autres récepteurs, en broadcast à tous les membres du groupe (le récepteur est inclus dedans). A priori, cela génère plus de trafic, mais cela reste gérable (au plus 3$\times$ le trafic de l'expéditeur) car [...].
+		 
+		 Ce broadcast peut aussi éviter du reporting inutile (par exemple, si un récepteur signale des pertes de paquets, un autre récepteur qui en aurait aussi recevra le paquet RTCP, mais n'en enverra pas un lui-même, car le paquet qu'il a reçu était déjà en broadcast).
+		 
+		 Il existe des techniques comme celle-ci qui permettent de diminuer le trafic. Le problème est que certains (voir trop de) récepteurs pourraient rester silencieux, ce qui fait que le comptage des récepteurs sera faux. On pourrait alors, en fonction des reports reçus et de leur fréquence, en déduire une probabilité d'avoir un groupe petit ou grand, et donc d'adapter le débit.
+		 
+		\section{SIP - Session Initiation Protocol}
+		
+		Le but est d'atteindre quelqu'un et d'établir une communication. Les services qu'offre SIP :
+		
+		\begin{itemize}
+			\item la mise en place d'un appel : un appelant doit pouvoir faire savoir à un appelé qu'on cherche à l'atteindre, avec un accord sur le type de média et l'encodage.
+			\item la détermination de l'adresse IP d'une personne à contacter, on aurait un mapping entre un mnémonique et une adresse IP.
+			\item la gestion d'un appel comporte l'ajout de nouveaux flux durant l'appel, le changement d'encodage durant l'appel, l'invitation de tiers, le transfert d'appel, etc.
+		\end{itemize}
+	
+		SIP peut être utilisé avec TCP ou UDP. Par exemple, voici la mise en place avec TCP.	
+		\dessin{89}
+		
+		Pour négocier un codec, si une des parties ne possède pas un codec spécifié dans le message INVITE, elle envoie un message de type 606 qui liste tous les encodeurs disponibles. L'autre partie va alors renvoyer un message INVITE, avec un encodeur différent.
+		
+		Une des parties peut rejeter un appel. Des médias peuvent être envoyés avec RTP ou un autre protocole.
+		
+		\dessinS{90}{.6}
+		
+		La syntaxe des messages est celle des messages HTTP. Le sdp est le "session description protocol". Call-ID est unique pour chaque appel.
+		
+		Le challenge est de mapper le nom d'un appelé vers son adresse IP, en sachant qu'il peut se déplacer. L'idée est d'utiliser des serveurs SIP, où les clients peuvent s'enregistrer (dans le SIP Registrar) via des messages REGISTER et communiquer leurs préférences d'utilisation de SIP.
+		
+		On a, en plus de serveurs SIP d'enregistrement, des proxy SIP qui vont résoudre l'adresse (comme un DNS). Les proxy SIP vont ainsi retourner un message contenant l'adresse IP de la personne à appeler.
+		
+		Exemple :
+		
+		\dessin{91}
+		
+		A noter que SIP utilise des ACKs.
+		
+			\subsection{Comparaison avec H.323}
+			
+			H.323 est un autre protocole de signalisation pour de l'interactivité en temps réel. Il est une suite complète de protocoles pour les conférences multimédia : signalisation, enregistrement, transport, codec, etc. Il s'agit d'un protocole venant du monde de la téléphonie.		
+		
+			Par rapport à H.323, SIP est plus simple et factorise le problème (ce n'est pas une réponse tout en un compliquée). SIP tire ses concepts d'HTTP.
+					

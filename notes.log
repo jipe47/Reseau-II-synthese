@@ -1,0 +1,1433 @@
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2011.9.3)  27 JAN 2012 19:59
+entering extended mode
+**notes.tex
+(C:\Users\Jipe\Desktop\git\reseauII\notes.tex
+LaTeX2e <2011/06/27>
+Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
+abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
+croatian, czech, danish, dutch, esperanto, estonian, farsi, finnish, french, ga
+lician, german, german-x-2009-06-19, greek, gujarati, hindi, hungarian, iceland
+ic, indonesian, interlingua, irish, italian, kannada, kurmanji, lao, latin, lat
+vian, lithuanian, malayalam, marathi, mongolian, mongolianlmc, monogreek, ngerm
+an, ngerman-x-2009-06-19, nynorsk, oriya, panjabi, pinyin, polish, portuguese, 
+romanian, russian, sanskrit, serbian, slovak, slovenian, spanish, swedish, swis
+sgerman, tamil, telugu, turkish, turkmen, ukenglish, ukrainian, uppersorbian, u
+senglishmax, welsh, loaded.
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\report.cls"
+Document Class: report 2007/10/19 v1.4h Standard LaTeX document class
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\size10.clo"
+File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@chapter=\count80
+\c@section=\count81
+\c@subsection=\count82
+\c@subsubsection=\count83
+\c@paragraph=\count84
+\c@subparagraph=\count85
+\c@figure=\count86
+\c@table=\count87
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\inputenc.sty"
+Package: inputenc 2008/03/30 v1.1d Input encoding file
+\inpenc@prehook=\toks14
+\inpenc@posthook=\toks15
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\utf8.def"
+File: utf8.def 2008/04/05 v1.1m UTF-8 support for inputenc
+Now handling font encoding OML ...
+... no UTF-8 mapping file for font encoding OML
+Now handling font encoding T1 ...
+... processing UTF-8 mapping file for font encoding T1
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\t1enc.dfu"
+File: t1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
+   defining Unicode char U+00A1 (decimal 161)
+   defining Unicode char U+00A3 (decimal 163)
+   defining Unicode char U+00AB (decimal 171)
+   defining Unicode char U+00BB (decimal 187)
+   defining Unicode char U+00BF (decimal 191)
+   defining Unicode char U+00C0 (decimal 192)
+   defining Unicode char U+00C1 (decimal 193)
+   defining Unicode char U+00C2 (decimal 194)
+   defining Unicode char U+00C3 (decimal 195)
+   defining Unicode char U+00C4 (decimal 196)
+   defining Unicode char U+00C5 (decimal 197)
+   defining Unicode char U+00C6 (decimal 198)
+   defining Unicode char U+00C7 (decimal 199)
+   defining Unicode char U+00C8 (decimal 200)
+   defining Unicode char U+00C9 (decimal 201)
+   defining Unicode char U+00CA (decimal 202)
+   defining Unicode char U+00CB (decimal 203)
+   defining Unicode char U+00CC (decimal 204)
+   defining Unicode char U+00CD (decimal 205)
+   defining Unicode char U+00CE (decimal 206)
+   defining Unicode char U+00CF (decimal 207)
+   defining Unicode char U+00D0 (decimal 208)
+   defining Unicode char U+00D1 (decimal 209)
+   defining Unicode char U+00D2 (decimal 210)
+   defining Unicode char U+00D3 (decimal 211)
+   defining Unicode char U+00D4 (decimal 212)
+   defining Unicode char U+00D5 (decimal 213)
+   defining Unicode char U+00D6 (decimal 214)
+   defining Unicode char U+00D8 (decimal 216)
+   defining Unicode char U+00D9 (decimal 217)
+   defining Unicode char U+00DA (decimal 218)
+   defining Unicode char U+00DB (decimal 219)
+   defining Unicode char U+00DC (decimal 220)
+   defining Unicode char U+00DD (decimal 221)
+   defining Unicode char U+00DE (decimal 222)
+   defining Unicode char U+00DF (decimal 223)
+   defining Unicode char U+00E0 (decimal 224)
+   defining Unicode char U+00E1 (decimal 225)
+   defining Unicode char U+00E2 (decimal 226)
+   defining Unicode char U+00E3 (decimal 227)
+   defining Unicode char U+00E4 (decimal 228)
+   defining Unicode char U+00E5 (decimal 229)
+   defining Unicode char U+00E6 (decimal 230)
+   defining Unicode char U+00E7 (decimal 231)
+   defining Unicode char U+00E8 (decimal 232)
+   defining Unicode char U+00E9 (decimal 233)
+   defining Unicode char U+00EA (decimal 234)
+   defining Unicode char U+00EB (decimal 235)
+   defining Unicode char U+00EC (decimal 236)
+   defining Unicode char U+00ED (decimal 237)
+   defining Unicode char U+00EE (decimal 238)
+   defining Unicode char U+00EF (decimal 239)
+   defining Unicode char U+00F0 (decimal 240)
+   defining Unicode char U+00F1 (decimal 241)
+   defining Unicode char U+00F2 (decimal 242)
+   defining Unicode char U+00F3 (decimal 243)
+   defining Unicode char U+00F4 (decimal 244)
+   defining Unicode char U+00F5 (decimal 245)
+   defining Unicode char U+00F6 (decimal 246)
+   defining Unicode char U+00F8 (decimal 248)
+   defining Unicode char U+00F9 (decimal 249)
+   defining Unicode char U+00FA (decimal 250)
+   defining Unicode char U+00FB (decimal 251)
+   defining Unicode char U+00FC (decimal 252)
+   defining Unicode char U+00FD (decimal 253)
+   defining Unicode char U+00FE (decimal 254)
+   defining Unicode char U+00FF (decimal 255)
+   defining Unicode char U+0102 (decimal 258)
+   defining Unicode char U+0103 (decimal 259)
+   defining Unicode char U+0104 (decimal 260)
+   defining Unicode char U+0105 (decimal 261)
+   defining Unicode char U+0106 (decimal 262)
+   defining Unicode char U+0107 (decimal 263)
+   defining Unicode char U+010C (decimal 268)
+   defining Unicode char U+010D (decimal 269)
+   defining Unicode char U+010E (decimal 270)
+   defining Unicode char U+010F (decimal 271)
+   defining Unicode char U+0110 (decimal 272)
+   defining Unicode char U+0111 (decimal 273)
+   defining Unicode char U+0118 (decimal 280)
+   defining Unicode char U+0119 (decimal 281)
+   defining Unicode char U+011A (decimal 282)
+   defining Unicode char U+011B (decimal 283)
+   defining Unicode char U+011E (decimal 286)
+   defining Unicode char U+011F (decimal 287)
+   defining Unicode char U+0130 (decimal 304)
+   defining Unicode char U+0131 (decimal 305)
+   defining Unicode char U+0132 (decimal 306)
+   defining Unicode char U+0133 (decimal 307)
+   defining Unicode char U+0139 (decimal 313)
+   defining Unicode char U+013A (decimal 314)
+   defining Unicode char U+013D (decimal 317)
+   defining Unicode char U+013E (decimal 318)
+   defining Unicode char U+0141 (decimal 321)
+   defining Unicode char U+0142 (decimal 322)
+   defining Unicode char U+0143 (decimal 323)
+   defining Unicode char U+0144 (decimal 324)
+   defining Unicode char U+0147 (decimal 327)
+   defining Unicode char U+0148 (decimal 328)
+   defining Unicode char U+014A (decimal 330)
+   defining Unicode char U+014B (decimal 331)
+   defining Unicode char U+0150 (decimal 336)
+   defining Unicode char U+0151 (decimal 337)
+   defining Unicode char U+0152 (decimal 338)
+   defining Unicode char U+0153 (decimal 339)
+   defining Unicode char U+0154 (decimal 340)
+   defining Unicode char U+0155 (decimal 341)
+   defining Unicode char U+0158 (decimal 344)
+   defining Unicode char U+0159 (decimal 345)
+   defining Unicode char U+015A (decimal 346)
+   defining Unicode char U+015B (decimal 347)
+   defining Unicode char U+015E (decimal 350)
+   defining Unicode char U+015F (decimal 351)
+   defining Unicode char U+0160 (decimal 352)
+   defining Unicode char U+0161 (decimal 353)
+   defining Unicode char U+0162 (decimal 354)
+   defining Unicode char U+0163 (decimal 355)
+   defining Unicode char U+0164 (decimal 356)
+   defining Unicode char U+0165 (decimal 357)
+   defining Unicode char U+016E (decimal 366)
+   defining Unicode char U+016F (decimal 367)
+   defining Unicode char U+0170 (decimal 368)
+   defining Unicode char U+0171 (decimal 369)
+   defining Unicode char U+0178 (decimal 376)
+   defining Unicode char U+0179 (decimal 377)
+   defining Unicode char U+017A (decimal 378)
+   defining Unicode char U+017B (decimal 379)
+   defining Unicode char U+017C (decimal 380)
+   defining Unicode char U+017D (decimal 381)
+   defining Unicode char U+017E (decimal 382)
+   defining Unicode char U+200C (decimal 8204)
+   defining Unicode char U+2013 (decimal 8211)
+   defining Unicode char U+2014 (decimal 8212)
+   defining Unicode char U+2018 (decimal 8216)
+   defining Unicode char U+2019 (decimal 8217)
+   defining Unicode char U+201A (decimal 8218)
+   defining Unicode char U+201C (decimal 8220)
+   defining Unicode char U+201D (decimal 8221)
+   defining Unicode char U+201E (decimal 8222)
+   defining Unicode char U+2030 (decimal 8240)
+   defining Unicode char U+2031 (decimal 8241)
+   defining Unicode char U+2039 (decimal 8249)
+   defining Unicode char U+203A (decimal 8250)
+   defining Unicode char U+2423 (decimal 9251)
+)
+Now handling font encoding OT1 ...
+... processing UTF-8 mapping file for font encoding OT1
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\ot1enc.dfu"
+File: ot1enc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
+   defining Unicode char U+00A1 (decimal 161)
+   defining Unicode char U+00A3 (decimal 163)
+   defining Unicode char U+00B8 (decimal 184)
+   defining Unicode char U+00BF (decimal 191)
+   defining Unicode char U+00C5 (decimal 197)
+   defining Unicode char U+00C6 (decimal 198)
+   defining Unicode char U+00D8 (decimal 216)
+   defining Unicode char U+00DF (decimal 223)
+   defining Unicode char U+00E6 (decimal 230)
+   defining Unicode char U+00EC (decimal 236)
+   defining Unicode char U+00ED (decimal 237)
+   defining Unicode char U+00EE (decimal 238)
+   defining Unicode char U+00EF (decimal 239)
+   defining Unicode char U+00F8 (decimal 248)
+   defining Unicode char U+0131 (decimal 305)
+   defining Unicode char U+0141 (decimal 321)
+   defining Unicode char U+0142 (decimal 322)
+   defining Unicode char U+0152 (decimal 338)
+   defining Unicode char U+0153 (decimal 339)
+   defining Unicode char U+2013 (decimal 8211)
+   defining Unicode char U+2014 (decimal 8212)
+   defining Unicode char U+2018 (decimal 8216)
+   defining Unicode char U+2019 (decimal 8217)
+   defining Unicode char U+201C (decimal 8220)
+   defining Unicode char U+201D (decimal 8221)
+)
+Now handling font encoding OMS ...
+... processing UTF-8 mapping file for font encoding OMS
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\omsenc.dfu"
+File: omsenc.dfu 2008/04/05 v1.1m UTF-8 support for inputenc
+   defining Unicode char U+00A7 (decimal 167)
+   defining Unicode char U+00B6 (decimal 182)
+   defining Unicode char U+00B7 (decimal 183)
+   defining Unicode char U+2020 (decimal 8224)
+   defining Unicode char U+2021 (decimal 8225)
+   defining Unicode char U+2022 (decimal 8226)
+)
+Now handling font encoding OMX ...
+... no UTF-8 mapping file for font encoding OMX
+Now handling font encoding U ...
+... no UTF-8 mapping file for font encoding U
+   defining Unicode char U+00A9 (decimal 169)
+   defining Unicode char U+00AA (decimal 170)
+   defining Unicode char U+00AE (decimal 174)
+   defining Unicode char U+00BA (decimal 186)
+   defining Unicode char U+02C6 (decimal 710)
+   defining Unicode char U+02DC (decimal 732)
+   defining Unicode char U+200C (decimal 8204)
+   defining Unicode char U+2026 (decimal 8230)
+   defining Unicode char U+2122 (decimal 8482)
+   defining Unicode char U+2423 (decimal 9251)
+))
+("C:\Program Files\MiKTeX 2.9\tex\latex\ams\math\amsmath.sty"
+Package: amsmath 2000/07/18 v2.13 AMS math features
+\@mathmargin=\skip43
+
+For additional information on amsmath, use the `?' option.
+("C:\Program Files\MiKTeX 2.9\tex\latex\ams\math\amstext.sty"
+Package: amstext 2000/06/29 v2.01
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\ams\math\amsgen.sty"
+File: amsgen.sty 1999/11/30 v2.0
+\@emptytoks=\toks16
+\ex@=\dimen103
+))
+("C:\Program Files\MiKTeX 2.9\tex\latex\ams\math\amsbsy.sty"
+Package: amsbsy 1999/11/29 v1.2d
+\pmbraise@=\dimen104
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\ams\math\amsopn.sty"
+Package: amsopn 1999/12/14 v2.01 operator names
+)
+\inf@bad=\count88
+LaTeX Info: Redefining \frac on input line 211.
+\uproot@=\count89
+\leftroot@=\count90
+LaTeX Info: Redefining \overline on input line 307.
+\classnum@=\count91
+\DOTSCASE@=\count92
+LaTeX Info: Redefining \ldots on input line 379.
+LaTeX Info: Redefining \dots on input line 382.
+LaTeX Info: Redefining \cdots on input line 467.
+\Mathstrutbox@=\box26
+\strutbox@=\box27
+\big@size=\dimen105
+LaTeX Font Info:    Redeclaring font encoding OML on input line 567.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
+\macc@depth=\count93
+\c@MaxMatrixCols=\count94
+\dotsspace@=\muskip10
+\c@parentequation=\count95
+\dspbrk@lvl=\count96
+\tag@help=\toks17
+\row@=\count97
+\column@=\count98
+\maxfields@=\count99
+\andhelp@=\toks18
+\eqnshift@=\dimen106
+\alignsep@=\dimen107
+\tagshift@=\dimen108
+\tagwidth@=\dimen109
+\totwidth@=\dimen110
+\lineht@=\dimen111
+\@envbody=\toks19
+\multlinegap=\skip44
+\multlinetaggap=\skip45
+\mathdisplay@stack=\toks20
+LaTeX Info: Redefining \[ on input line 2666.
+LaTeX Info: Redefining \] on input line 2667.
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\amsfonts.sty"
+Package: amsfonts 2009/06/22 v3.00 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 96.
+)
+("C:\Program Files\MiKTeX 2.9\tex\generic\babel\babel.sty"
+Package: babel 2008/07/08 v3.8m The Babel package
+
+*************************************
+* Local config file bblopts.cfg used
+*
+("C:\Program Files\MiKTeX 2.9\tex\latex\00miktex\bblopts.cfg"
+File: bblopts.cfg 2006/07/31 v1.0 MiKTeX 'babel' configuration
+)
+("C:\Program Files\MiKTeX 2.9\tex\generic\babel\frenchb.ldf"
+Language: frenchb 2009/03/16 v2.3d French support from the babel system
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\babel\babel.def"
+File: babel.def 2008/07/08 v3.8m Babel common definitions
+\babel@savecnt=\count100
+\U@D=\dimen112
+)
+Package babel Info: Making : an active character on input line 120.
+Package babel Info: Making ; an active character on input line 121.
+Package babel Info: Making ! an active character on input line 122.
+Package babel Info: Making ? an active character on input line 123.
+\FB@Mht=\dimen113
+\std@mcc=\count101
+\dec@mcc=\count102
+\parindentFFN=\dimen114
+
+*************************************
+* Local config file frenchb.cfg used
+*
+("C:\Program Files\MiKTeX 2.9\tex\generic\babel\frenchb.cfg")))
+("C:\Program Files\MiKTeX 2.9\tex\latex\carlisle\scalefnt.sty")
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks21
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\amssymb.sty"
+Package: amssymb 2009/06/22 v3.00
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\preprint\fullpage.sty"
+Package: fullpage 1999/02/23 1.1 (PWD)
+\FP@margin=\skip46
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\trig.sty"
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\00miktex\graphics.cfg"
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\pdftex-def\pdftex.def"
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.sty"
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/message (HO)
+)
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.sty"
+Package: ltxcmds 2011/04/18 v1.20 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count103
+))
+\Gin@req@height=\dimen115
+\Gin@req@width=\dimen116
+)
+\@indexfile=\write3
+
+Writing index file notes.idx
+(C:\Users\Jipe\Desktop\git\reseauII\notes.aux)
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Info: Redefining \degres on input line 19.
+LaTeX Info: Redefining \dots on input line 19.
+LaTeX Info: Redefining \up on input line 19.
+
+
+Package frenchb.ldf Warning: OT1 encoding should not be used for French. 
+(frenchb.ldf)                Add \usepackage[T1]{fontenc} to the preamble
+(frenchb.ldf)                of your document, on input line 19.
+
+("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count104
+\scratchdimen=\dimen117
+\scratchbox=\box28
+\nofMPsegments=\count105
+\nofMParguments=\count106
+\everyMPshowfont=\toks22
+\MPscratchCnt=\count107
+\MPscratchDim=\dimen118
+\MPnumerator=\count108
+\makeMPintoPDFobject=\count109
+\everyMPtoPDFconversion=\toks23
+)
+LaTeX Font Info:    Try loading font information for U+msa on input line 20.
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
+File: umsa.fd 2009/06/22 v3.00 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 20.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
+File: umsb.fd 2009/06/22 v3.00 AMS symbols B
+) [1
+
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
+(C:\Users\Jipe\Desktop\git\reseauII\notes.toc [1
+
+])
+\tf@toc=\write4
+ [2]
+Chapitre 1.
+<images/1.png, id=16, 138.5175pt x 147.55125pt>
+File: images/1.png Graphic file (type png)
+ <use images/1.png>
+Package pdftex.def Info: images/1.png used on input line 34.
+(pdftex.def)             Requested size: 102.50345pt x 109.18845pt.
+
+<images/2.png, id=18, 152.06813pt x 137.01187pt>
+File: images/2.png Graphic file (type png)
+ <use images/2.png>
+Package pdftex.def Info: images/2.png used on input line 38.
+(pdftex.def)             Requested size: 112.53096pt x 101.38928pt.
+ [3
+
+ <C:/Users/Jipe/Desktop/git/reseauII/images/1.png> <C:/Users/Jipe/Desktop/git/r
+eseauII/images/2.png>] <images/5.png, id=23, 406.51875pt x 175.40532pt>
+File: images/5.png Graphic file (type png)
+
+<use images/5.png>
+Package pdftex.def Info: images/5.png used on input line 60.
+(pdftex.def)             Requested size: 300.82536pt x 129.80057pt.
+ <images/4.png, id=24, 406.51875pt x 164.11313pt>
+File: images/4.png Graphic file (type png)
+
+<use images/4.png>
+Package pdftex.def Info: images/4.png used on input line 64.
+(pdftex.def)             Requested size: 300.82536pt x 121.4443pt.
+ <images/127.png, id=25, 302.63063pt x 223.58531pt>
+File: images/127.png Graphic file (type png)
+
+<use images/127.png>
+Package pdftex.def Info: images/127.png used on input line 82.
+(pdftex.def)             Requested size: 223.94777pt x 165.45393pt.
+ [4 <C:/Users/Jipe/Desktop/git/reseauII/images/5.png> <C:/Users/Jipe/Desktop/gi
+t/reseauII/images/4.png> <C:/Users/Jipe/Desktop/git/reseauII/images/127.png>] <
+images/129.png, id=30, 256.70906pt x 142.28156pt>
+File: images/129.png Graphic file (type png)
+
+<use images/129.png>
+Package pdftex.def Info: images/129.png used on input line 91.
+(pdftex.def)             Requested size: 189.96564pt x 105.28886pt.
+ [5 <C:/Users/Jipe/Desktop/git/reseauII/images/129.png>]
+<images/3.png, id=35, 386.94562pt x 207.77625pt>
+File: images/3.png Graphic file (type png)
+ <use images/3.png>
+Package pdftex.def Info: images/3.png used on input line 149.
+(pdftex.def)             Requested size: 286.34117pt x 153.75517pt.
+
+<images/130.png, id=36, 346.29375pt x 165.61874pt>
+File: images/130.png Graphic file (type png)
+ <use images/130.png>
+Package pdftex.def Info: images/130.png used on input line 168.
+(pdftex.def)             Requested size: 256.25864pt x 122.55847pt.
+
+[6 <C:/Users/Jipe/Desktop/git/reseauII/images/3.png> <C:/Users/Jipe/Desktop/git
+/reseauII/images/130.png>] <images/133.png, id=43, 444.91219pt x 187.45032pt>
+File: images/133.png Graphic file (type png)
+
+<use images/133.png>
+Package pdftex.def Info: images/133.png used on input line 187.
+(pdftex.def)             Requested size: 329.23663pt x 138.71391pt.
+ <images/134.png, id=44, 485.56406pt x 129.48375pt>
+File: images/134.png Graphic file (type png)
+
+<use images/134.png>
+Package pdftex.def Info: images/134.png used on input line 198.
+(pdftex.def)             Requested size: 359.31918pt x 95.81844pt.
+ <images/135.png, id=45, 460.72125pt x 165.61874pt>
+File: images/135.png Graphic file (type png)
+
+<use images/135.png>
+Package pdftex.def Info: images/135.png used on input line 216.
+(pdftex.def)             Requested size: 340.93541pt x 122.55847pt.
+ [7 <C:/Users/Jipe/Desktop/git/reseauII/images/133.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/134.png>]
+<images/136.png, id=51, 438.8897pt x 143.03438pt>
+File: images/136.png Graphic file (type png)
+ <use images/136.png>
+Package pdftex.def Info: images/136.png used on input line 254.
+(pdftex.def)             Requested size: 324.77998pt x 105.84595pt.
+
+<images/128.png, id=52, 483.30562pt x 172.39406pt>
+File: images/128.png Graphic file (type png)
+ <use images/128.png>
+Package pdftex.def Info: images/128.png used on input line 262.
+(pdftex.def)             Requested size: 357.64793pt x 127.57222pt.
+
+[8 <C:/Users/Jipe/Desktop/git/reseauII/images/135.png> <C:/Users/Jipe/Desktop/g
+it/reseauII/images/136.png>]
+<images/137.png, id=60, 320.69812pt x 103.88812pt>
+File: images/137.png Graphic file (type png)
+ <use images/137.png>
+Package pdftex.def Info: images/137.png used on input line 296.
+(pdftex.def)             Requested size: 237.31778pt x 76.87758pt.
+
+[9 <C:/Users/Jipe/Desktop/git/reseauII/images/128.png> <C:/Users/Jipe/Desktop/g
+it/reseauII/images/137.png>]
+<images/138.png, id=66, 213.79875pt x 204.01219pt>
+File: images/138.png Graphic file (type png)
+ <use images/138.png>
+Package pdftex.def Info: images/138.png used on input line 331.
+(pdftex.def)             Requested size: 158.21185pt x 150.96976pt.
+
+<images/139.png, id=67, 479.54156pt x 326.72063pt>
+File: images/139.png Graphic file (type png)
+ <use images/139.png>
+Package pdftex.def Info: images/139.png used on input line 353.
+(pdftex.def)             Requested size: 354.86252pt x 241.77446pt.
+
+[10 <C:/Users/Jipe/Desktop/git/reseauII/images/138.png>]
+<images/140.png, id=72, 468.24937pt x 329.73187pt>
+File: images/140.png Graphic file (type png)
+ <use images/140.png>
+Package pdftex.def Info: images/140.png used on input line 355.
+(pdftex.def)             Requested size: 346.50624pt x 244.00278pt.
+
+<images/141.png, id=73, 497.60907pt x 301.8778pt>
+File: images/141.png Graphic file (type png)
+ <use images/141.png>
+Package pdftex.def Info: images/141.png used on input line 357.
+(pdftex.def)             Requested size: 368.23253pt x 223.39067pt.
+ [11 <C:/Users/Jipe/Desktop/git/reseauII/images/139.png> <C:/Users/Jipe/Desktop
+/git/reseauII/images/140.png>] <images/142.png, id=79, 501.37312pt x 295.85532p
+t>
+File: images/142.png Graphic file (type png)
+
+<use images/142.png>
+Package pdftex.def Info: images/142.png used on input line 359.
+(pdftex.def)             Requested size: 371.01794pt x 218.934pt.
+ <images/143.png, id=80, 502.12593pt x 305.64188pt>
+File: images/143.png Graphic file (type png)
+
+<use images/143.png>
+Package pdftex.def Info: images/143.png used on input line 361.
+(pdftex.def)             Requested size: 371.57504pt x 226.1761pt.
+ [12 <C:/Users/Jipe/Desktop/git/reseauII/images/141.png> <C:/Users/Jipe/Desktop
+/git/reseauII/images/142.png> <C:/Users/Jipe/Desktop/git/reseauII/images/143.pn
+g>] [13]
+Chapitre 2.
+<images/6.png, id=91, 367.3725pt x 151.3153pt>
+File: images/6.png Graphic file (type png)
+ <use images/6.png>
+Package pdftex.def Info: images/6.png used on input line 382.
+(pdftex.def)             Requested size: 271.85698pt x 111.97386pt.
+
+<images/7.png, id=92, 231.86626pt x 225.84375pt>
+File: images/7.png Graphic file (type png)
+ <use images/7.png>
+Package pdftex.def Info: images/7.png used on input line 392.
+(pdftex.def)             Requested size: 171.58186pt x 167.12518pt.
+ [14
+
+ <C:/Users/Jipe/Desktop/git/reseauII/images/6.png> <C:/Users/Jipe/Desktop/git/r
+eseauII/images/7.png>] <images/8.png, id=98, 472.76625pt x 171.64125pt>
+File: images/8.png Graphic file (type png)
+
+<use images/8.png>
+Package pdftex.def Info: images/8.png used on input line 412.
+(pdftex.def)             Requested size: 349.84875pt x 127.01514pt.
+ <images/9.png, id=99, 494.59781pt x 223.58531pt>
+File: images/9.png Graphic file (type png)
+
+<use images/9.png>
+Package pdftex.def Info: images/9.png used on input line 440.
+(pdftex.def)             Requested size: 296.76097pt x 134.1522pt.
+ [15 <C:/Users/Jipe/Desktop/git/reseauII/images/8.png> <C:/Users/Jipe/Desktop/g
+it/reseauII/images/9.png>]
+<images/10.png, id=107, 368.87813pt x 149.8097pt>
+File: images/10.png Graphic file (type png)
+ <use images/10.png>
+Package pdftex.def Info: images/10.png used on input line 449.
+(pdftex.def)             Requested size: 272.97116pt x 110.85971pt.
+
+<images/12.png, id=108, 410.2828pt x 57.96657pt>
+File: images/12.png Graphic file (type png)
+ <use images/12.png>
+Package pdftex.def Info: images/12.png used on input line 465.
+(pdftex.def)             Requested size: 303.61078pt x 42.89546pt.
+
+<images/11.png, id=109, 410.2828pt x 100.87688pt>
+File: images/11.png Graphic file (type png)
+ <use images/11.png>
+Package pdftex.def Info: images/11.png used on input line 476.
+(pdftex.def)             Requested size: 303.61078pt x 74.64925pt.
+ [16 <C:/Users/Jipe/Desktop/git/reseauII/images/10.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/12.png> <C:/Users/Jipe/Desktop/git/reseauII/images/11.png>]
+
+<images/13.png, id=116, 404.26031pt x 304.88907pt>
+File: images/13.png Graphic file (type png)
+ <use images/13.png>
+Package pdftex.def Info: images/13.png used on input line 496.
+(pdftex.def)             Requested size: 299.15411pt x 225.61902pt.
+
+<images/14.png, id=117, 418.56375pt x 207.77625pt>
+File: images/14.png Graphic file (type png)
+ <use images/14.png>
+Package pdftex.def Info: images/14.png used on input line 511.
+(pdftex.def)             Requested size: 309.7387pt x 153.75517pt.
+ [17 <C:/Users/Jipe/Desktop/git/reseauII/images/13.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/14.png>] <images/15.png, id=125, 408.77719pt x 171.64125pt>
+File: images/15.png Graphic file (type png)
+
+<use images/15.png>
+Package pdftex.def Info: images/15.png used on input line 529.
+(pdftex.def)             Requested size: 302.49661pt x 127.01514pt.
+ <images/16.png, id=126, 408.02437pt x 185.94469pt>
+File: images/16.png Graphic file (type png)
+
+<use images/16.png>
+Package pdftex.def Info: images/16.png used on input line 551.
+(pdftex.def)             Requested size: 301.93953pt x 137.59973pt.
+ [18 <C:/Users/Jipe/Desktop/git/reseauII/images/15.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/16.png>]
+<images/17.png, id=133, 400.49625pt x 127.97812pt>
+File: images/17.png Graphic file (type png)
+ <use images/17.png>
+Package pdftex.def Info: images/17.png used on input line 561.
+(pdftex.def)             Requested size: 296.3687pt x 94.70427pt.
+
+<images/18.png, id=134, 484.05844pt x 141.52875pt>
+File: images/18.png Graphic file (type png)
+ <use images/18.png>
+Package pdftex.def Info: images/18.png used on input line 600.
+(pdftex.def)             Requested size: 314.63425pt x 91.99258pt.
+
+<images/19.png, id=135, 429.10312pt x 306.39468pt>
+File: images/19.png Graphic file (type png)
+ <use images/19.png>
+Package pdftex.def Info: images/19.png used on input line 606.
+(pdftex.def)             Requested size: 317.53787pt x 226.73318pt.
+ [19 <C:/Users/Jipe/Desktop/git/reseauII/images/17.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/18.png>] <images/20.png, id=141, 411.78844pt x 175.40532pt>
+File: images/20.png Graphic file (type png)
+
+<use images/20.png>
+Package pdftex.def Info: images/20.png used on input line 614.
+(pdftex.def)             Requested size: 304.72495pt x 129.80057pt.
+ <images/21.png, id=142, 429.10312pt x 277.035pt>
+File: images/21.png Graphic file (type png)
+
+<use images/21.png>
+Package pdftex.def Info: images/21.png used on input line 630.
+(pdftex.def)             Requested size: 214.55103pt x 138.51715pt.
+ [20 <C:/Users/Jipe/Desktop/git/reseauII/images/19.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/20.png> <C:/Users/Jipe/Desktop/git/reseauII/images/21.png>]
+ <images/22.png, id=147, 379.4175pt x 145.29282pt>
+File: images/22.png Graphic file (type png)
+
+<use images/22.png>
+Package pdftex.def Info: images/22.png used on input line 644.
+(pdftex.def)             Requested size: 227.65225pt x 87.17635pt.
+ <images/23.png, id=148, 404.26031pt x 140.02313pt>
+File: images/23.png Graphic file (type png)
+
+<use images/23.png>
+Package pdftex.def Info: images/23.png used on input line 651.
+(pdftex.def)             Requested size: 363.83092pt x 126.01964pt.
+ <images/24.png, id=149, 370.38374pt x 174.6525pt>
+File: images/24.png Graphic file (type png)
+
+<use images/24.png>
+Package pdftex.def Info: images/24.png used on input line 672.
+(pdftex.def)             Requested size: 274.08531pt x 129.24348pt.
+ [21 <C:/Users/Jipe/Desktop/git/reseauII/images/22.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/23.png>]
+<images/25.png, id=155, 526.96875pt x 259.7203pt>
+File: images/25.png Graphic file (type png)
+ <use images/25.png>
+Package pdftex.def Info: images/25.png used on input line 676.
+(pdftex.def)             Requested size: 389.9588pt x 192.19397pt.
+
+<images/26.png, id=156, 375.65344pt x 112.16907pt>
+File: images/26.png Graphic file (type png)
+ <use images/26.png>
+Package pdftex.def Info: images/26.png used on input line 690.
+(pdftex.def)             Requested size: 277.98491pt x 83.00551pt.
+ [22 <C:/Users/Jipe/Desktop/git/reseauII/images/24.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/25.png> <C:/Users/Jipe/Desktop/git/reseauII/images/26.png>]
+
+Chapitre 3.
+<images/27.png, id=163, 514.17094pt x 266.49562pt>
+File: images/27.png Graphic file (type png)
+ <use images/27.png>
+Package pdftex.def Info: images/27.png used on input line 725.
+(pdftex.def)             Requested size: 380.48839pt x 197.20773pt.
+ [23
+
+ <C:/Users/Jipe/Desktop/git/reseauII/images/27.png>]
+<images/28.png, id=168, 434.37282pt x 234.8775pt>
+File: images/28.png Graphic file (type png)
+ <use images/28.png>
+Package pdftex.def Info: images/28.png used on input line 741.
+(pdftex.def)             Requested size: 321.43747pt x 173.81021pt.
+
+<images/29.png, id=169, 219.82124pt x 258.9675pt>
+File: images/29.png Graphic file (type png)
+ <use images/29.png>
+Package pdftex.def Info: images/29.png used on input line 754.
+(pdftex.def)             Requested size: 162.66852pt x 191.63687pt.
+
+<images/30.png, id=170, 465.99094pt x 141.52875pt>
+File: images/30.png Graphic file (type png)
+ <use images/30.png>
+Package pdftex.def Info: images/30.png used on input line 764.
+(pdftex.def)             Requested size: 344.83499pt x 104.73178pt.
+ [24 <C:/Users/Jipe/Desktop/git/reseauII/images/28.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/29.png>] <images/31.png, id=177, 481.8pt x 274.77657pt>
+File: images/31.png Graphic file (type png)
+
+<use images/31.png>
+Package pdftex.def Info: images/31.png used on input line 777.
+(pdftex.def)             Requested size: 457.7074pt x 261.03624pt.
+ <images/32.png, id=178, 308.65312pt x 310.15875pt>
+File: images/32.png Graphic file (type png)
+
+<use images/32.png>
+Package pdftex.def Info: images/32.png used on input line 785.
+(pdftex.def)             Requested size: 308.65236pt x 310.15799pt.
+ [25 <C:/Users/Jipe/Desktop/git/reseauII/images/30.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/31.png>]
+<images/33.png, id=184, 301.8778pt x 255.95625pt>
+File: images/33.png Graphic file (type png)
+ <use images/33.png>
+Package pdftex.def Info: images/33.png used on input line 787.
+(pdftex.def)             Requested size: 150.93852pt x 127.9778pt.
+
+<images/34.png, id=185, 252.19218pt x 303.38344pt>
+File: images/34.png Graphic file (type png)
+ <use images/34.png>
+Package pdftex.def Info: images/34.png used on input line 809.
+(pdftex.def)             Requested size: 186.62314pt x 224.50485pt.
+ [26 <C:/Users/Jipe/Desktop/git/reseauII/images/32.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/33.png>] <images/35.png, id=190, 511.9125pt x 145.29282pt>
+File: images/35.png Graphic file (type png)
+
+<use images/35.png>
+Package pdftex.def Info: images/35.png used on input line 818.
+(pdftex.def)             Requested size: 409.53056pt x 116.23439pt.
+ [27 <C:/Users/Jipe/Desktop/git/reseauII/images/34.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/35.png>]
+<images/36.png, id=196, 185.19188pt x 210.7875pt>
+File: images/36.png Graphic file (type png)
+ <use images/36.png>
+Package pdftex.def Info: images/36.png used on input line 864.
+(pdftex.def)             Requested size: 137.04265pt x 155.98352pt.
+
+<images/37.png, id=197, 505.13719pt x 304.88907pt>
+File: images/37.png Graphic file (type png)
+ <use images/37.png>
+Package pdftex.def Info: images/37.png used on input line 878.
+(pdftex.def)             Requested size: 373.80338pt x 225.61902pt.
+ [28 <C:/Users/Jipe/Desktop/git/reseauII/images/36.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/37.png>] <images/41.png, id=203, 511.15968pt x 249.18094pt>
+File: images/41.png Graphic file (type png)
+
+<use images/41.png>
+Package pdftex.def Info: images/41.png used on input line 886.
+(pdftex.def)             Requested size: 378.26003pt x 184.39479pt.
+ <images/39.png, id=204, 501.37312pt x 307.90031pt>
+File: images/39.png Graphic file (type png)
+
+<use images/39.png>
+Package pdftex.def Info: images/39.png used on input line 902.
+(pdftex.def)             Requested size: 371.01794pt x 227.84735pt.
+ <images/40.png, id=205, 469.755pt x 298.86656pt>
+File: images/40.png Graphic file (type png)
+
+<use images/40.png>
+Package pdftex.def Info: images/40.png used on input line 906.
+(pdftex.def)             Requested size: 347.62042pt x 221.16234pt.
+ [29 <C:/Users/Jipe/Desktop/git/reseauII/images/41.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/39.png>]
+<images/42.png, id=211, 252.945pt x 209.28188pt>
+File: images/42.png Graphic file (type png)
+ <use images/42.png>
+Package pdftex.def Info: images/42.png used on input line 912.
+(pdftex.def)             Requested size: 177.06029pt x 146.49629pt.
+File: images/29.png Graphic file (type png)
+
+<use images/29.png>
+Package pdftex.def Info: images/29.png used on input line 923.
+(pdftex.def)             Requested size: 153.87381pt x 181.27599pt.
+ [30 <C:/Users/Jipe/Desktop/git/reseauII/images/40.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/42.png>]
+<images/43.png, id=218, 217.5628pt x 294.34969pt>
+File: images/43.png Graphic file (type png)
+ <use images/43.png>
+Package pdftex.def Info: images/43.png used on input line 937.
+(pdftex.def)             Requested size: 160.99727pt x 217.81984pt.
+
+<images/44.png, id=219, 444.91219pt x 222.07968pt>
+File: images/44.png Graphic file (type png)
+ <use images/44.png>
+Package pdftex.def Info: images/44.png used on input line 952.
+(pdftex.def)             Requested size: 329.23663pt x 164.33977pt.
+
+<images/45.png, id=220, 359.84438pt x 246.9225pt>
+File: images/45.png Graphic file (type png)
+ <use images/45.png>
+Package pdftex.def Info: images/45.png used on input line 960.
+(pdftex.def)             Requested size: 266.28615pt x 182.72354pt.
+ [31 <C:/Users/Jipe/Desktop/git/reseauII/images/43.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/44.png>] <images/46.png, id=226, 256.70906pt x 143.78719pt>
+File: images/46.png Graphic file (type png)
+
+<use images/46.png>
+Package pdftex.def Info: images/46.png used on input line 973.
+(pdftex.def)             Requested size: 189.96564pt x 106.40305pt.
+ <images/47.png, id=227, 527.72156pt x 298.86656pt>
+File: images/47.png Graphic file (type png)
+
+<use images/47.png>
+Package pdftex.def Info: images/47.png used on input line 986.
+(pdftex.def)             Requested size: 390.5159pt x 221.16234pt.
+ [32 <C:/Users/Jipe/Desktop/git/reseauII/images/45.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/46.png>]
+<images/48.png, id=233, 517.18219pt x 229.60782pt>
+File: images/48.png Graphic file (type png)
+ <use images/48.png>
+Package pdftex.def Info: images/48.png used on input line 996.
+(pdftex.def)             Requested size: 382.71672pt x 169.91061pt.
+
+<images/49.png, id=234, 467.49657pt x 197.23688pt>
+File: images/49.png Graphic file (type png)
+ <use images/49.png>
+Package pdftex.def Info: images/49.png used on input line 1009.
+(pdftex.def)             Requested size: 303.86917pt x 128.20244pt.
+ [33 <C:/Users/Jipe/Desktop/git/reseauII/images/47.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/48.png>] <images/50.png, id=240, 506.6428pt x 216.81pt>
+File: images/50.png Graphic file (type png)
+
+<use images/50.png>
+Package pdftex.def Info: images/50.png used on input line 1027.
+(pdftex.def)             Requested size: 374.91754pt x 160.44019pt.
+
+Overfull \hbox (2.90775pt too wide) in paragraph at lines 1031--1032
+[]\OT1/cmr/m/n/10 La re-cherche du cor-res-pon-dant peut don-ner des so-lu-tion
+s extr^emes (re-cherche ex-haus-tive, contac-ter des peripheriques
+ []
+
+<images/52.png, id=241, 395.97937pt x 154.32657pt>
+File: images/52.png Graphic file (type png)
+ <use images/52.png>
+Package pdftex.def Info: images/52.png used on input line 1047.
+(pdftex.def)             Requested size: 293.02618pt x 114.20221pt.
+ [34 <C:/Users/Jipe/Desktop/git/reseauII/images/49.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/50.png>] <images/53.png, id=247, 499.8675pt x 286.82156pt>
+File: images/53.png Graphic file (type png)
+
+<use images/53.png>
+Package pdftex.def Info: images/53.png used on input line 1059.
+(pdftex.def)             Requested size: 369.90378pt x 212.249pt.
+ [35 <C:/Users/Jipe/Desktop/git/reseauII/images/52.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/53.png>]
+<images/54.png, id=253, 501.37312pt x 279.29344pt>
+File: images/54.png Graphic file (type png)
+ <use images/54.png>
+Package pdftex.def Info: images/54.png used on input line 1079.
+(pdftex.def)             Requested size: 371.01794pt x 206.67816pt.
+
+<images/55.png, id=254, 384.6872pt x 189.70876pt>
+File: images/55.png Graphic file (type png)
+ <use images/55.png>
+Package pdftex.def Info: images/55.png used on input line 1087.
+(pdftex.def)             Requested size: 284.66994pt x 140.38516pt.
+ [36 <C:/Users/Jipe/Desktop/git/reseauII/images/54.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/55.png>] <images/57.png, id=261, 453.19313pt x 236.38312pt>
+File: images/57.png Graphic file (type png)
+
+<use images/57.png>
+Package pdftex.def Info: images/57.png used on input line 1116.
+(pdftex.def)             Requested size: 335.36458pt x 174.92436pt.
+ <images/58.png, id=262, 502.87875pt x 299.61937pt>
+File: images/58.png Graphic file (type png)
+
+<use images/58.png>
+Package pdftex.def Info: images/58.png used on input line 1122.
+(pdftex.def)             Requested size: 372.13211pt x 221.71944pt.
+ <images/56.png, id=263, 506.6428pt x 278.54062pt>
+File: images/56.png Graphic file (type png)
+
+<use images/56.png>
+Package pdftex.def Info: images/56.png used on input line 1131.
+(pdftex.def)             Requested size: 374.91754pt x 206.12108pt.
+ [37 <C:/Users/Jipe/Desktop/git/reseauII/images/57.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/58.png>]
+<images/59.png, id=269, 526.21594pt x 310.91156pt>
+File: images/59.png Graphic file (type png)
+ <use images/59.png>
+Package pdftex.def Info: images/59.png used on input line 1160.
+(pdftex.def)             Requested size: 389.40173pt x 230.07568pt.
+ [38 <C:/Users/Jipe/Desktop/git/reseauII/images/56.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/59.png>] <images/60.png, id=275, 225.09094pt x 183.68625pt>
+File: images/60.png Graphic file (type png)
+
+<use images/60.png>
+Package pdftex.def Info: images/60.png used on input line 1176.
+(pdftex.def)             Requested size: 191.32819pt x 156.13402pt.
+ <images/61.png, id=276, 530.73282pt x 219.06844pt>
+File: images/61.png Graphic file (type png)
+
+<use images/61.png>
+Package pdftex.def Info: images/61.png used on input line 1193.
+(pdftex.def)             Requested size: 424.58682pt x 175.25497pt.
+ [39 <C:/Users/Jipe/Desktop/git/reseauII/images/60.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/61.png>]
+<images/62.png, id=281, 496.10344pt x 312.41719pt>
+File: images/62.png Graphic file (type png)
+ <use images/62.png>
+Package pdftex.def Info: images/62.png used on input line 1201.
+(pdftex.def)             Requested size: 367.11836pt x 231.18985pt.
+ [40 <C:/Users/Jipe/Desktop/git/reseauII/images/62.png>]
+Chapitre 4.
+<images/63.png, id=285, 497.60907pt x 274.77657pt>
+File: images/63.png Graphic file (type png)
+ <use images/63.png>
+Package pdftex.def Info: images/63.png used on input line 1245.
+(pdftex.def)             Requested size: 368.23253pt x 203.33565pt.
+ [41
+
+ <C:/Users/Jipe/Desktop/git/reseauII/images/63.png>]
+<images/64.png, id=290, 290.58563pt x 146.77516pt>
+File: images/64.png Graphic file (type png)
+ <use images/64.png>
+Package pdftex.def Info: images/64.png used on input line 1297.
+(pdftex.def)             Requested size: 215.03442pt x 108.61415pt.
+
+<images/65.png, id=291, 475.7775pt x 198.7425pt>
+File: images/65.png Graphic file (type png)
+ <use images/65.png>
+Package pdftex.def Info: images/65.png used on input line 1305.
+(pdftex.def)             Requested size: 352.07709pt x 147.07016pt.
+ [42 <C:/Users/Jipe/Desktop/git/reseauII/images/64.png>]
+<images/66.png, id=297, 435.87843pt x 157.33781pt>
+File: images/66.png Graphic file (type png)
+ <use images/66.png>
+Package pdftex.def Info: images/66.png used on input line 1315.
+(pdftex.def)             Requested size: 261.52907pt x 94.4034pt.
+ [43 <C:/Users/Jipe/Desktop/git/reseauII/images/65.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/66.png>] <images/67.png, id=302, 515.67656pt x 162.6075pt>
+File: images/67.png Graphic file (type png)
+
+<use images/67.png>
+Package pdftex.def Info: images/67.png used on input line 1386.
+(pdftex.def)             Requested size: 381.60254pt x 120.33014pt.
+ <images/68.png, id=303, 450.18187pt x 177.66376pt>
+File: images/68.png Graphic file (type png)
+
+<use images/68.png>
+Package pdftex.def Info: images/68.png used on input line 1394.
+(pdftex.def)             Requested size: 333.13623pt x 131.47182pt.
+ <images/69.png, id=304, 528.47438pt x 155.83218pt>
+File: images/69.png Graphic file (type png)
+
+<use images/69.png>
+Package pdftex.def Info: images/69.png used on input line 1408.
+(pdftex.def)             Requested size: 391.07298pt x 115.31638pt.
+ [44 <C:/Users/Jipe/Desktop/git/reseauII/images/67.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/68.png>]
+<images/70.png, id=311, 280.04625pt x 193.47281pt>
+File: images/70.png Graphic file (type png)
+ <use images/70.png>
+Package pdftex.def Info: images/70.png used on input line 1418.
+(pdftex.def)             Requested size: 207.23523pt x 143.17058pt.
+
+<images/71.png, id=312, 356.0803pt x 124.96687pt>
+File: images/71.png Graphic file (type png)
+ <use images/71.png>
+Package pdftex.def Info: images/71.png used on input line 1432.
+(pdftex.def)             Requested size: 263.50073pt x 92.47594pt.
+ [45 <C:/Users/Jipe/Desktop/git/reseauII/images/69.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/70.png> <C:/Users/Jipe/Desktop/git/reseauII/images/71.png>]
+
+<images/131.png, id=319, 330.48468pt x 156.585pt>
+File: images/131.png Graphic file (type png)
+ <use images/131.png>
+Package pdftex.def Info: images/131.png used on input line 1452.
+(pdftex.def)             Requested size: 214.81248pt x 101.77904pt.
+
+<images/72.png, id=320, 271.0125pt x 173.89969pt>
+File: images/72.png Graphic file (type png)
+ <use images/72.png>
+Package pdftex.def Info: images/72.png used on input line 1497.
+(pdftex.def)             Requested size: 200.55023pt x 128.68639pt.
+ [46 <C:/Users/Jipe/Desktop/git/reseauII/images/131.png>]
+<images/73.png, id=325, 389.20406pt x 173.14688pt>
+File: images/73.png Graphic file (type png)
+ <use images/73.png>
+Package pdftex.def Info: images/73.png used on input line 1503.
+(pdftex.def)             Requested size: 288.01244pt x 128.12932pt.
+
+<images/74.png, id=326, 329.73187pt x 187.45032pt>
+File: images/74.png Graphic file (type png)
+ <use images/74.png>
+Package pdftex.def Info: images/74.png used on input line 1507.
+(pdftex.def)             Requested size: 244.00278pt x 138.71391pt.
+
+<images/75.png, id=327, 491.58656pt x 210.7875pt>
+File: images/75.png Graphic file (type png)
+ <use images/75.png>
+Package pdftex.def Info: images/75.png used on input line 1517.
+(pdftex.def)             Requested size: 363.77586pt x 155.98352pt.
+
+<images/76.png, id=328, 381.67593pt x 175.40532pt>
+File: images/76.png Graphic file (type png)
+ <use images/76.png>
+Package pdftex.def Info: images/76.png used on input line 1519.
+(pdftex.def)             Requested size: 282.44159pt x 129.80057pt.
+ [47 <C:/Users/Jipe/Desktop/git/reseauII/images/72.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/73.png> <C:/Users/Jipe/Desktop/git/reseauII/images/74.png> 
+<C:/Users/Jipe/Desktop/git/reseauII/images/75.png>]
+<images/77.png, id=336, 341.02406pt x 279.29344pt>
+File: images/77.png Graphic file (type png)
+ <use images/77.png>
+Package pdftex.def Info: images/77.png used on input line 1577.
+(pdftex.def)             Requested size: 204.61601pt x 167.57735pt.
+ [48 <C:/Users/Jipe/Desktop/git/reseauII/images/76.png>]
+File: images/75.png Graphic file (type png)
+ <use images/75.png>
+Package pdftex.def Info: images/75.png used on input line 1601.
+(pdftex.def)             Requested size: 363.77586pt x 155.98352pt.
+ [49 <C:/Users/Jipe/Desktop/git/reseauII/images/77.png>]
+<images/79.png, id=346, 359.09157pt x 259.7203pt>
+File: images/79.png Graphic file (type png)
+ <use images/79.png>
+Package pdftex.def Info: images/79.png used on input line 1610.
+(pdftex.def)             Requested size: 305.22926pt x 220.76329pt.
+ [50 <C:/Users/Jipe/Desktop/git/reseauII/images/79.png>]
+<images/80.png, id=351, 328.22626pt x 112.50278pt>
+File: images/80.png Graphic file (type png)
+ <use images/80.png>
+Package pdftex.def Info: images/80.png used on input line 1668.
+(pdftex.def)             Requested size: 213.34453pt x 73.12592pt.
+
+<images/81.png, id=352, 441.90094pt x 126.65877pt>
+File: images/81.png Graphic file (type png)
+ <use images/81.png>
+Package pdftex.def Info: images/81.png used on input line 1691.
+(pdftex.def)             Requested size: 287.23221pt x 82.32721pt.
+ [51 <C:/Users/Jipe/Desktop/git/reseauII/images/80.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/81.png>] <images/82.png, id=356, 408.02437pt x 212.29312pt>
+File: images/82.png Graphic file (type png)
+
+<use images/82.png>
+Package pdftex.def Info: images/82.png used on input line 1751.
+(pdftex.def)             Requested size: 326.41994pt x 169.83472pt.
+ <images/83.png, id=357, 481.8pt x 230.36063pt>
+File: images/83.png Graphic file (type png)
+
+<use images/83.png>
+Package pdftex.def Info: images/83.png used on input line 1759.
+(pdftex.def)             Requested size: 385.4405pt x 184.28873pt.
+
+Overfull \hbox (1.07443pt too wide) in paragraph at lines 1761--1762
+[]\OT1/cmr/m/n/10 Cela per-met de ne pas ajou-ter de re-don-dance et une perte 
+est dif-fi-cile a re-mar-quer, mais il y a un delai supplementaire
+ []
+
+<images/84.png, id=358, 234.8775pt x 272.51813pt>
+File: images/84.png Graphic file (type png)
+ <use images/84.png>
+Package pdftex.def Info: images/84.png used on input line 1770.
+(pdftex.def)             Requested size: 173.81021pt x 201.66441pt.
+ [52 <C:/Users/Jipe/Desktop/git/reseauII/images/82.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/83.png>] <images/85.png, id=364, 420.82219pt x 191.21437pt>
+File: images/85.png Graphic file (type png)
+
+<use images/85.png>
+Package pdftex.def Info: images/85.png used on input line 1778.
+(pdftex.def)             Requested size: 336.6582pt x 152.9717pt.
+ [53 <C:/Users/Jipe/Desktop/git/reseauII/images/84.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/85.png>]
+<images/86.png, id=370, 182.93344pt x 167.87718pt>
+File: images/86.png Graphic file (type png)
+ <use images/86.png>
+Package pdftex.def Info: images/86.png used on input line 1813.
+(pdftex.def)             Requested size: 135.3714pt x 124.22972pt.
+
+<images/87.png, id=371, 409.53pt x 129.48375pt>
+File: images/87.png Graphic file (type png)
+ <use images/87.png>
+Package pdftex.def Info: images/87.png used on input line 1817.
+(pdftex.def)             Requested size: 327.62444pt x 103.58711pt.
+ [54 <C:/Users/Jipe/Desktop/git/reseauII/images/86.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/87.png>] <images/88.png, id=378, 169.38281pt x 170.88844pt>
+File: images/88.png Graphic file (type png)
+
+<use images/88.png>
+Package pdftex.def Info: images/88.png used on input line 1847.
+(pdftex.def)             Requested size: 143.97606pt x 145.25584pt.
+ [55 <C:/Users/Jipe/Desktop/git/reseauII/images/88.png>]
+<images/89.png, id=383, 389.20406pt x 358.33875pt>
+File: images/89.png Graphic file (type png)
+ <use images/89.png>
+Package pdftex.def Info: images/89.png used on input line 1889.
+(pdftex.def)             Requested size: 288.01244pt x 265.17198pt.
+
+<images/90.png, id=384, 322.95656pt x 222.07968pt>
+File: images/90.png Graphic file (type png)
+ <use images/90.png>
+Package pdftex.def Info: images/90.png used on input line 1895.
+(pdftex.def)             Requested size: 193.77542pt x 133.24883pt.
+
+<images/91.png, id=385, 516.42938pt x 316.18124pt>
+File: images/91.png Graphic file (type png)
+ <use images/91.png>
+Package pdftex.def Info: images/91.png used on input line 1905.
+(pdftex.def)             Requested size: 382.15964pt x 233.97528pt.
+ [56 <C:/Users/Jipe/Desktop/git/reseauII/images/89.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/90.png>] [57 <C:/Users/Jipe/Desktop/git/reseauII/images/91.
+png>]
+Chapitre 5.
+<images/92.png, id=395, 472.76625pt x 142.28156pt>
+File: images/92.png Graphic file (type png)
+ <use images/92.png>
+Package pdftex.def Info: images/92.png used on input line 1966.
+(pdftex.def)             Requested size: 378.2135pt x 113.8254pt.
+ [58
+
+]
+<images/93.png, id=399, 383.93437pt x 143.03438pt>
+File: images/93.png Graphic file (type png)
+ <use images/93.png>
+Package pdftex.def Info: images/93.png used on input line 1974.
+(pdftex.def)             Requested size: 284.11284pt x 105.84595pt.
+
+<images/94.png, id=400, 516.42938pt x 149.8097pt>
+File: images/94.png Graphic file (type png)
+ <use images/94.png>
+Package pdftex.def Info: images/94.png used on input line 2001.
+(pdftex.def)             Requested size: 382.15964pt x 110.85971pt.
+ [59 <C:/Users/Jipe/Desktop/git/reseauII/images/92.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/93.png> <C:/Users/Jipe/Desktop/git/reseauII/images/94.png>]
+
+<images/95.png, id=408, 308.65312pt x 115.18031pt>
+File: images/95.png Graphic file (type png)
+ <use images/95.png>
+Package pdftex.def Info: images/95.png used on input line 2017.
+(pdftex.def)             Requested size: 228.40443pt x 85.23383pt.
+ [60 <C:/Users/Jipe/Desktop/git/reseauII/images/95.png>]
+<images/96.png, id=414, 179.92218pt x 80.46556pt>
+File: images/96.png Graphic file (type png)
+ <use images/96.png>
+Package pdftex.def Info: images/96.png used on input line 2066.
+(pdftex.def)             Requested size: 133.14307pt x 59.54478pt.
+
+<images/97.png, id=415, 179.92218pt x 114.4275pt>
+File: images/97.png Graphic file (type png)
+ <use images/97.png>
+Package pdftex.def Info: images/97.png used on input line 2070.
+(pdftex.def)             Requested size: 133.14307pt x 84.67676pt.
+
+<images/98.png, id=416, 502.12593pt x 329.73187pt>
+File: images/98.png Graphic file (type png)
+ <use images/98.png>
+Package pdftex.def Info: images/98.png used on input line 2104.
+(pdftex.def)             Requested size: 371.57504pt x 244.00278pt.
+ [61 <C:/Users/Jipe/Desktop/git/reseauII/images/96.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/97.png>] <images/99.png, id=421, 526.21594pt x 322.95656pt>
+File: images/99.png Graphic file (type png)
+
+<use images/99.png>
+Package pdftex.def Info: images/99.png used on input line 2118.
+(pdftex.def)             Requested size: 389.40173pt x 238.98903pt.
+ [62 <C:/Users/Jipe/Desktop/git/reseauII/images/98.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/99.png>]
+<images/100.png, id=427, 280.79906pt x 182.93344pt>
+File: images/100.png Graphic file (type png)
+ <use images/100.png>
+Package pdftex.def Info: images/100.png used on input line 2141.
+(pdftex.def)             Requested size: 182.51721pt x 118.90532pt.
+
+<images/101.png, id=428, 280.79906pt x 182.93344pt>
+File: images/101.png Graphic file (type png)
+ <use images/101.png>
+Package pdftex.def Info: images/101.png used on input line 2151.
+(pdftex.def)             Requested size: 182.51721pt x 118.90532pt.
+
+[63 <C:/Users/Jipe/Desktop/git/reseauII/images/100.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/101.png>]
+<images/102.png, id=434, 142.28156pt x 164.86594pt>
+File: images/102.png Graphic file (type png)
+ <use images/102.png>
+Package pdftex.def Info: images/102.png used on input line 2196.
+(pdftex.def)             Requested size: 105.28886pt x 122.00137pt.
+
+<images/103.png, id=435, 501.37312pt x 290.58563pt>
+File: images/103.png Graphic file (type png)
+ <use images/103.png>
+Package pdftex.def Info: images/103.png used on input line 2198.
+(pdftex.def)             Requested size: 371.01794pt x 215.03442pt.
+
+<images/104.png, id=436, 309.40594pt x 170.88844pt>
+File: images/104.png Graphic file (type png)
+ <use images/104.png>
+Package pdftex.def Info: images/104.png used on input line 2218.
+(pdftex.def)             Requested size: 228.96153pt x 126.45807pt.
+
+[64 <C:/Users/Jipe/Desktop/git/reseauII/images/102.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/103.png>] <images/105.png, id=442, 335.75438pt x 168.63pt>
+File: images/105.png Graphic file (type png)
+
+<use images/105.png>
+Package pdftex.def Info: images/105.png used on input line 2227.
+(pdftex.def)             Requested size: 248.45947pt x 124.7868pt.
+ <images/106.png, id=443, 499.11469pt x 469.00218pt>
+File: images/106.png Graphic file (type png)
+
+<use images/106.png>
+Package pdftex.def Info: images/106.png used on input line 2244.
+(pdftex.def)             Requested size: 369.34668pt x 347.06334pt.
+ [65 <C:/Users/Jipe/Desktop/git/reseauII/images/104.png> <C:/Users/Jipe/Desktop
+/git/reseauII/images/105.png>]
+<images/107.png, id=449, 467.49657pt x 229.60782pt>
+File: images/107.png Graphic file (type png)
+ <use images/107.png>
+Package pdftex.def Info: images/107.png used on input line 2252.
+(pdftex.def)             Requested size: 345.94917pt x 169.91061pt.
+
+[66 <C:/Users/Jipe/Desktop/git/reseauII/images/106.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/107.png>]
+<images/108.png, id=456, 328.22626pt x 156.46083pt>
+File: images/108.png Graphic file (type png)
+ <use images/108.png>
+Package pdftex.def Info: images/108.png used on input line 2264.
+(pdftex.def)             Requested size: 242.88863pt x 115.78159pt.
+
+<images/109.png, id=457, 496.10344pt x 136.25906pt>
+File: images/109.png Graphic file (type png)
+ <use images/109.png>
+Package pdftex.def Info: images/109.png used on input line 2269.
+(pdftex.def)             Requested size: 367.11836pt x 100.83218pt.
+
+<images/110.png, id=458, 479.54156pt x 122.70844pt>
+File: images/110.png Graphic file (type png)
+ <use images/110.png>
+Package pdftex.def Info: images/110.png used on input line 2294.
+(pdftex.def)             Requested size: 354.86252pt x 90.80469pt.
+
+<images/111.png, id=459, 493.0922pt x 170.13562pt>
+File: images/111.png Graphic file (type png)
+ <use images/111.png>
+Package pdftex.def Info: images/111.png used on input line 2300.
+(pdftex.def)             Requested size: 364.89003pt x 125.90097pt.
+
+[67 <C:/Users/Jipe/Desktop/git/reseauII/images/108.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/109.png> <C:/Users/Jipe/Desktop/git/reseauII/images/110.png
+>] <images/112.png, id=465, 493.0922pt x 182.18062pt>
+File: images/112.png Graphic file (type png)
+ <use images/112.png>
+Package pdftex.def Info: images/112.png used on input line 2334.
+(pdftex.def)             Requested size: 364.89003pt x 134.81432pt.
+
+[68 <C:/Users/Jipe/Desktop/git/reseauII/images/111.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/112.png>]
+<images/113.png, id=471, 490.83376pt x 182.93344pt>
+File: images/113.png Graphic file (type png)
+ <use images/113.png>
+Package pdftex.def Info: images/113.png used on input line 2340.
+(pdftex.def)             Requested size: 363.21878pt x 135.3714pt.
+
+<images/114.png, id=472, 479.54156pt x 303.38344pt>
+File: images/114.png Graphic file (type png)
+ <use images/114.png>
+Package pdftex.def Info: images/114.png used on input line 2351.
+(pdftex.def)             Requested size: 354.86252pt x 224.50485pt.
+
+<images/115.png, id=473, 285.31593pt x 279.29344pt>
+File: images/115.png Graphic file (type png)
+ <use images/115.png>
+Package pdftex.def Info: images/115.png used on input line 2355.
+(pdftex.def)             Requested size: 211.13483pt x 206.67816pt.
+
+[69 <C:/Users/Jipe/Desktop/git/reseauII/images/113.png> <C:/Users/Jipe/Desktop/
+git/reseauII/images/114.png>]
+<images/117.png, id=479, 301.8778pt x 63.98906pt>
+File: images/117.png Graphic file (type png)
+ <use images/117.png>
+Package pdftex.def Info: images/117.png used on input line 2403.
+(pdftex.def)             Requested size: 196.21823pt x 41.59238pt.
+ [70 <C:/Users/Jipe/Desktop/git/reseauII/images/115.png> <C:/Users/Jipe/Desktop
+/git/reseauII/images/117.png>] <images/118.png, id=484, 325.215pt x 153.57375pt
+>
+File: images/118.png Graphic file (type png)
+
+<use images/118.png>
+Package pdftex.def Info: images/118.png used on input line 2413.
+(pdftex.def)             Requested size: 240.6603pt x 113.64513pt.
+ <images/132.png, id=485, 455.45157pt x 193.47281pt>
+File: images/132.png Graphic file (type png)
+
+<use images/132.png>
+Package pdftex.def Info: images/132.png used on input line 2449.
+(pdftex.def)             Requested size: 337.03583pt x 143.17058pt.
+ [71 <C:/Users/Jipe/Desktop/git/reseauII/images/118.png> <C:/Users/Jipe/Desktop
+/git/reseauII/images/132.png>]
+<images/119.png, id=491, 462.22687pt x 94.10156pt>
+File: images/119.png Graphic file (type png)
+ <use images/119.png>
+Package pdftex.def Info: images/119.png used on input line 2471.
+(pdftex.def)             Requested size: 342.04958pt x 69.63548pt.
+
+<images/120.png, id=492, 457.71pt x 261.97874pt>
+File: images/120.png Graphic file (type png)
+ <use images/120.png>
+Package pdftex.def Info: images/120.png used on input line 2499.
+(pdftex.def)             Requested size: 338.70709pt x 193.86523pt.
+ [72 <C:/Users/Jipe/Desktop/git/reseauII/images/119.png> <C:/Users/Jipe/Desktop
+/git/reseauII/images/120.png>] [73] <images/121.png, id=502, 386.19281pt x 233.
+37187pt>
+File: images/121.png Graphic file (type png)
+
+<use images/121.png>
+Package pdftex.def Info: images/121.png used on input line 2612.
+(pdftex.def)             Requested size: 285.78409pt x 172.69603pt.
+ <images/124.png, id=503, 531.48563pt x 252.19218pt>
+File: images/124.png Graphic file (type png)
+
+<use images/124.png>
+Package pdftex.def Info: images/124.png used on input line 2618.
+(pdftex.def)             Requested size: 393.30132pt x 186.62314pt.
+ [74 <C:/Users/Jipe/Desktop/git/reseauII/images/121.png>]
+<images/122.png, id=508, 517.935pt x 255.95625pt>
+File: images/122.png Graphic file (type png)
+ <use images/122.png>
+Package pdftex.def Info: images/122.png used on input line 2622.
+(pdftex.def)             Requested size: 383.27379pt x 189.40855pt.
+
+<images/123.png, id=509, 536.0025pt x 249.93375pt>
+File: images/123.png Graphic file (type png)
+ <use images/123.png>
+Package pdftex.def Info: images/123.png used on input line 2632.
+(pdftex.def)             Requested size: 396.64381pt x 184.95189pt.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 2635
+.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
+File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 2635.
+
+ [75 <C:/Users/Jipe/Desktop/git/reseauII/images/124.png> <C:/Users/Jipe/Desktop
+/git/reseauII/images/122.png> <C:/Users/Jipe/Desktop/git/reseauII/images/123.pn
+g>]
+<images/125.png, id=516, 393.72093pt x 202.50656pt>
+File: images/125.png Graphic file (type png)
+ <use images/125.png>
+Package pdftex.def Info: images/125.png used on input line 2642.
+(pdftex.def)             Requested size: 291.35493pt x 149.85558pt.
+
+<images/126.png, id=517, 503.63156pt x 209.28188pt>
+File: images/126.png Graphic file (type png)
+ <use images/126.png>
+Package pdftex.def Info: images/126.png used on input line 2684.
+(pdftex.def)             Requested size: 372.6892pt x 154.86934pt.
+
+[76 <C:/Users/Jipe/Desktop/git/reseauII/images/125.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 2730--2731
+
+ []
+
+[77 <C:/Users/Jipe/Desktop/git/reseauII/images/126.png>] [78]
+(C:\Users\Jipe\Desktop\git\reseauII\notes.aux) ) 
+Here is how much of TeX's memory you used:
+ 3665 strings out of 494045
+ 47634 string characters out of 3148391
+ 100578 words of memory out of 3000000
+ 6777 multiletter control sequences out of 15000+200000
+ 13229 words of font info for 51 fonts, out of 3000000 for 9000
+ 715 hyphenation exceptions out of 8191
+ 27i,8n,24p,543b,264s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type
+1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public
+/amsfonts/cm/cmex10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfont
+s/cmextra/cmex7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
+/cmmi10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.p
+fb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Pr
+ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Fil
+es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX
+ 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/font
+s/type1/public/amsfonts/cm/cmr5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pu
+blic/amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
+nts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/c
+msy7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb
+><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on notes.pdf (79 pages, 4642486 bytes).
+PDF statistics:
+ 583 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 696 words of extra memory for PDF output out of 10000 (max. 10000000)
+

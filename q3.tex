@@ -1,0 +1,101 @@
+\chapter{MPLS : principes de la commutation de labels - FEC - création et distribution des labels}
+
+MPLS est similaire à de l'ATM sous IP, mais est mieux intégré. Le but initial est d'accélérer IP en utilisant des labels de taille fixe à la place d'adresse IP. Ce sont des idées venant de l'approche des circuits virtuels, mais les datagrammes IP gardent toujours leur adresse.
+	
+	\dessinS{18}{.65}
+	
+	Il ajoute un header supplémentaire dans le paquet, avec un label (nombre). Ce dernier sera utilisé comme un numéro de circuit virtuel. Ces paquets seront traités par des routeurs dit LSR (label-switched router). Ces routeurs ne se basent plus que sur ce label, ils n'inspectent pas l'adresse IP. MPLS définit une table d'acheminement distincte des tables d'acheminement IP.
+	
+	Un protocole de signalisation est nécessaire pour mettre en place l'état d'acheminement. MPLS permet de l'acheminement sur des chemins qu'IP ne saurait pas faire, par exemple le routage spécifique à l'adresse source. C'est pour cela que MPLS est utilisé pour l'ingénierie du trafic. Il doit cependant coexister avec les routeurs ne gérant qu'IP.
+	
+	\dessin{19}
+	
+	Dans l'exemple, le label de tête (out-label) est le même pour R3 et R2, sinon il y aurait deux entrées dans R1.
+	
+	Généralement, pour l'acheminement d'un paquet, le routeur d'entrée est appelé Ingress, et celui de sortie Egress.
+	
+	Un label permet de regrouper des circuits, afin de diminuer le nombre d'entrées dans la table d'acheminement. Cela nécessite d'utiliser deux labels : un pour le regroupement des circuits, et un autre pour un circuit individuel.
+	
+	\dessin{20}
+	
+		\section{FEC - Forwarding Equivalence Class}
+		
+		Pour rappel, le routing consiste à construire les tables de routage, tandis que le forwarding est l'acheminement de paquets en se basant le contenu des tables de forwarding, dérivées des tables de routage.
+		
+		On a différents types de forwarding pour IP :
+		
+		\begin{itemize}
+			\item le forwarding IP unicast : on utilise le préfixe de l'IP de destination (règle du longest prefix match)
+			\item le forwarding IP unicast avec un TOS : on utilise le préfixe de l'IP et la valeur TOS (longest prefix match pour l'adresse, et match exact pour le TOS)
+			\item le forwarding multicast : on utilise les adresses source et de destination et l'interface d'entrée (match exact). 
+		\end{itemize}
+		
+		On peut définir, parmi un ensemble de paquets IP, un sous-ensemble (classe) dont les paquets seront acheminés de la même manière. On peut définir ces classes en se basant sur le préfixe IP, mais on peut aussi se baser sur d'autres paradigmes pour subdiviser les classes. Par exemple en utilisant le type de service (TOS).
+		
+		\dessinS{21}{.5}
+		
+		Chaque classe aura un FEC. Si deux préfixes IP différents (A et B) suivent le même chemin, on peut les grouper.
+		
+		C'est au concepteur du réseau de définir ces classes. C'est permit par MPLS, alors que pour IP on est forcé d'utiliser le forwarding unicast, donc en se basant uniquement sur le préfixe.
+		
+		\section{Label switching}
+		
+		Tous les paquets ont un label, qui correspond à un FEC qui correspond à une classe, de taille courte et fixe (20 bits). Il agit comme un VCI d'ATM ; les routeurs se basent dessus pour décider de l'interface de sortie. On garde la possibilité d'utiliser aussi l'interface d'entrée. On n'a pas de contraintes sur la granularité du forwarding, cela signifie qu'un label peut être associé à n'importe FEC.
+		
+		Le label permet de matcher toutes les informations nécessaires pour acheminer le paquet. On a un mapping \texttt{label $\rightarrow$ composants} (à l'inverse d'IP), qui comprend un label de sortie, une interface de sortie, le next-hop, etc. Pour du multicast, il faut prévoir plusieurs composants pour un label, vu que le paquet peut être dupliqué sur plusieurs interfaces. Pour du QoS, un champ spécifierait une liste de sorties.
+		
+		Ainsi, il n'y a qu'un seul algorithme de forwarding (contrairement à IP qui en a plusieurs, un pour l'unicast, un pour le multicast, un pour l'unicast avec TOS, etc). Les chemins sont appelés LSP (label-switched path).
+		
+		\dessinS{22}{.6}
+		
+		Le label switching se situe entre les protocoles réseau (IPv4, IPv6, etc) et les protocoles des couches link (ATM, Ethernet, etc). L'avantage est qu'on n'utilise pas IP pour le forwarding, ce qui facilite le changement de technologie (par exemple d'IPv4 à IPv6). Il est complètement indépendant de la couche réseau et peut opérer sur n'importe quelle couche lien, d'où le nom \textbf{Multiprotocol} Label Switching. Cependant, on a quand même besoin d'un mécanisme pour obtenir un label.
+		
+		
+		\subsection{Le composant de contrôle}
+		
+		\dessinS{23}{.9}
+		
+		Ce composant est responsable
+		
+		\begin{itemize}
+			\item de distribuer les informations de routage à travers les LSR
+			\item des procédures pour convertir ces informations en une table de forwarding, c'est-à-dire créer des liens entre les labels et les FECs et les distribuer aux LSRs.
+		\end{itemize}
+		
+		IP n'a ainsi pas besoin des composants bleus.
+		
+		
+		\subsubsection{Binding local et distant}
+		Il existe deux manières de créer des liaisons entre des labels et des FECs :
+		
+		\begin{enumerate}
+			\item le binding local (upstream binding) : un LSR crée la liaison avec un label qui est choisi et assigné localement.
+			
+			\item le remote binding (downstream binding) : un LSR reçoit un label d'un autre LSR.
+		\end{enumerate}
+		
+		\dessin{24}
+		
+		Exemple : B va prévenir qu'il a assigné un label a un FEC. En A, on est intéressé car on utilise B comme next hop pour ce FEC, on va donc stocker le label dans la table d'acheminement et l'associer à un autre label et la sortie vers B. De la même manière, A va informer ses voisins à propos de ce mapping, ainsi ils pourront envoyer les paquets en A labellisé par le label associé.
+		
+		\dessin{25}
+		
+		On a ainsi un merge naturel des circuits, par rapport à ATM qui les aurait gardés distincts. Le "?"  de B signifie qu'on a pop le label de tête ($\leftrightarrow$ du tronçon commun) et qu'on utilise celui du circuit virtuel.
+		
+		On utilise le downstream binding, car l'upstream serait plus compliqué à implémenter. ATM utilise l'upstream ; si c'était de l'upstream pour MPLS, par exemple pour le routeur A, les deux routeurs (non nommés) donneraient des labels différents.
+		
+		\subsubsection{LDP - Label Distribution Protocol}
+		
+		C'est un mécanisme FEC-to-label, un plugin et non un substitut ; c'est un protocole qui distribue une liaison FEC-label à travers les LSRs, en utilisant un protocole de routage (comme OSPF).
+		
+		Si les FEC sont les traditionnels préfixes IP, les LSPs MPLS vont simplement suivre les plus court chemins IP. C'est du label switching, mais naïf.
+	
+		On utilise le protocole RSVP, qui permet une réservation de ressources et la récupération d'un label. 
+		
+		\dessin{26}
+		
+		La source envoie un message PATH à la destination, qui va répondre en utilisant un message RESV tout en distribuant des labels MPLS. La route est déterminée par les tables d'acheminement IP.
+		
+		Si le message PATH est étendue avec un objet de routage explicite (ERO - Explicit Route Object), le protocole RSVP-TE (pour trafic engineering) peut être utilisé pour établir un LSP qui a été précalculé (source routing). C'est utile quand les routes nécessitent un QoS qui nécessite des chemins particuliers (par exemple avec un minimum de bande passante), ou du load balancing.
+		
+		Le LSR ingress doit calculer la route, il doit donc connaître la topologie et l'état de QoS de tous les liens. OSPF doit donc être étendu pour supporter l'état QoS d'un lien (par exemple la bande passante disponible). Le LSR ingress va alors calculer le plus court chemin sous contraintes (par exemple Dijkstra sur un graphe réduit).

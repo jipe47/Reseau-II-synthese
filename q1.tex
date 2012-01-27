@@ -1,0 +1,304 @@
+\chapter{Routage multipoint : adressage - multicast sur un réseau local (IGMP) - techniques basées sur un arbre par source et sur un arbre partagé - PIM}
+
+	\section{Routing multicast}
+	
+	On veut atteindre un sous-ensemble de noeuds. Cela s'effectue au niveau d'IP.
+	
+	Un groupe multicast est un ensemble de récepteurs et d'expéditeurs, indépendants des uns des autres, mais qui souhaitent interagir entre eux. Ce groupe est créé lorsqu'un expéditeur commence à envoyer de l'information à un groupe, ou lorsqu'un récepteur montre de l'intérêt à la réception des paquets d'un groupe, même si personne n'en enverra.
+	
+	Le groupe est un point de rendez-vous logique ; l'expéditeur n'a pas besoin de connaître l'identité des récepteurs, c'est de l'\textbf{address indirection}. Pour multicaster à un groupe, le paquet est envoyé à une IP particulière. On ne sait pas à qui sera envoyé spécifiquement le paquet, car des personnes peuvent quitter ou entrer dans le groupe quand elles le souhaitent.
+	
+		\subsection{Adressage}
+	
+		Des ranges d'adresses IP sont réservés pour les groupes, ce sont des IPs dites de classe-D. Les routeurs peuvent les détecter et les distinguer des paquets "classiques" à forwarder.
+	
+		\dessin{127}
+	
+	
+		Ce sont les stations aux extrémités qui doivent indiquer qu'elles veulent recevoir des informations relatives à un groupe, mais elles restent sans connaissance des membres du groupe.
+	
+		Cela conduit à de nombreux sous-problèmes : quels groupes sont actifs, comment en rejoindre un, comment le réseau connaît les récepteurs, etc.
+		
+		\subsection{Arbre de plus court chemin}
+		
+		\dessin{129}
+		
+		Avec de l'unicast, 4 paquets seront envoyés par A, tandis qu'avec du multicast, 2 paquets seront envoyés.
+		
+		Idéalement, on n'aimerait envoyer qu'un seul paquet multicast par lien ; on forme un arbre multicast dont la racine est la source. Cet arbre sera optimal s'il utilise les plus courts chemins entre la source et tous les récepteurs.
+		
+		Pour avoir un arbre de plus court chemin en multicast, on peut réutiliser celui de l'unicast (obtenu avec Dijkstra ou autre).
+		
+		Pour optimiser l'arbre, on peut minimiser le plus grand délai pour atteindre un noeud.
+	
+		%On peut avoir un arbre par noeud (point to multipoint multiplié).
+	
+		\subsection{Difficultés en wide-area}
+	
+		On rencontre plusieurs difficultés avec le multicast en wide-area :
+	
+	\begin{itemize}
+		\item Des membres peuvent joindre le groupe ou en partir dynamiquement. Il est donc nécessaire de mettre à jour dynamiquement l'arbre de plus court chemin.
+		
+		\item On aimerait qu'un récepteur puisse joindre ou quitter le groupe sans notifier explicitement la source, sinon cela ne se scalerait pas (trop de trafic).
+		
+		\item Les feuilles comptent souvent des membres d'un même LAN, on aimerait donc exploiter les capacités de broadcast en LAN.
+	\end{itemize}
+	
+	\section{Multicast en local area}
+	
+		\subsection{IGMP - Internet Group Management Protocol}
+		IGMP est un protocole avec plusieurs instances dans un réseau, et établissant un dialogue entre un hôte et un routeur terminal. Lorsqu'un routeur sait qu'il y a des membres dans un groupe, il initialise lui-même les dialogues nécessaires avec les autres routeurs.
+		
+		Ici, le routeur a l'initiative : il broadcast sur le réseau périodiquement un message indiquant les groupes disponibles. Il sait juste s'il y a des personnes dans le groupe ou non ; il ne sait pas combien il y a de membres.
+	
+		Les hôtes répondent quand ils sont intéressés. Pour éviter un trafic trop élevé,
+	
+		\begin{itemize}
+			\item ils répondent après un temps de réponse choisi aléatoirement, afin d'éviter d'avoir un flux massif de messages en même temps
+			\item les réponses sont en broadcast, du coup les autres hôtes savent qu'il n'est pas nécessaire de répondre.
+		\end{itemize}
+	
+		Au final, les hôtes ne connaissent pas les identités de tous les hôtes intéressés, mais ils savent qu'il y en a au moins un.
+	
+		% ; il répondent après un temps de réponse choisi aléatoirement : cela évite d'avoir un flux massif de message en même temps, mais aussi la réponse est en broadcast (les autres savent qu'il y a un dialogue en cours, et attendent avant d'eux-même répondre).
+	
+		On peut filtrer les sources (IGMPv3) : un hôte peut entrer dans un groupe, et choisir de ne pas recevoir tous les paquets de tous les membres du groupe. Cela permet de se focaliser sur un ou des membres, ou supprimer du "bruit".
+	
+		Si un hôte n'est pas intéressé par un groupe, il peut ne pas répondre aux requêtes du routeur.
+	
+		Pour quitter un groupe, un hôte envoie un message explicite. Avant de faire partir un membre, le routeur doit savoir s'il y a encore des autres membres qui y sont connectés (car une réponse peut cacher un ou plusieurs hôtes).
+	
+		\subsection{Multicast avec le broadcast LAN}
+		
+		Le multicast en wide area peut exploiter les capacité de broadcast d'un LAN, par exemple Ethernet va multicaster tous les paquets avec le bit de multicast à 1 sur les adresses de destination.
+		
+		Pour qu'un routeur envoie un paquet à des membres d'un groupe, il faut utiliser une adresse MAC multicast, un problème similaire au mapping d'une IP unicast à une adresse MAC unicast. Un hôte devra écouter son adresse MAC, mais aussi celle du groupe.
+	
+		Le protocole ARP est utilisé en unicast, mais ce n'est pas vraiment adapté pour le multicast.
+		
+		Le problème est de mapper des IP multicast à des adresses MAC multicast, donc de déterminer la MAC adresse d'une adresse IP de classe D.
+	
+		\dessin{3}
+		
+		On a ainsi plusieurs adresses de classe D mappées sur la même adresse MAC.
+	
+		Une IP multicast est détectée avec le préfixe, une adresse MAC avec un bit. Les bits sont recopiés de l'IP vers MAC.
+	
+		Il y a un problème de mapping (scénario peu probable) : deux groupes peuvent avoir une même adresse MAC (mais de deux adresses IP multicast différentes). Cependant, les paquets indésirables seront jetés dans la couche supérieure, car l'adresse IP n'est pas correcte.
+	
+	\section{Multicast en wide area}
+	
+	Le but est de distribuer les paquets destinés à un groupe venant de n'importe quelle source à tous les routeurs sur le chemin d'un membre du groupe.
+	
+	Le problème est de connaître les routeurs associés à un groupe, donc de trouver un (ou des) arbre(s) connectant les routeurs qui ont des membres du groupe multicast. Deux types d'arbre permettent de router les paquets aux membres :
+	
+	\begin{itemize}
+		\item group-shared tree : un seul arbre pour tous les routeurs. Il n'est pas nécessairement optimal, mais c'est une méthode plus facile et scalable (une entrée par groupe dans une table de forwarding) ;
+		\item source-based tree : autant d'arbres que de sources. C'est optimal, mais plus lourd. On y utilise le reverse path forwarding (RPF).
+	\end{itemize}
+	
+	\dessin{130}
+	
+		\subsection{Source-based tree}
+		
+		%On peut utiliser un algorithme comme Dijkstra pour créer l'arbre. Cependant, cela peut être trop puissant (des noeuds inutiles pour un groupe).
+		
+		Chaque source va calculer le SPT (shortest path tree) vers tout les récepteurs ; avec la connaissance de la topologie, il suffit d'appliquer un algorithme comme Dijkstra.
+		
+		Au lieu de partir d'un noeud racine vers les feuilles, on pourrait faire le contraire, c'est-à-dire partir des feuilles et aller à la racine. Les chemins seront les mêmes si le coût d'un lien est le même dans un sens et dans l'autre. On peut également utiliser Dijkstra pour le SPT, en utilisant le coût opposé des liens.
+		
+		
+			\subsubsection{Reverse Path Forwarding}
+			
+			Pour du multicast, les SPTs ne sont pas calculés explicitement ; on va se baser sur la connaissance des plus courts chemins unicast du routeur. C'est la méthode du Reverse Path Forwarding, et qui applique une règle simple.
+			
+			%Autre méthode : Reverse Path Forwarding. On suppose qu'il y a déjà un protocole unicast qui permet de connaître la topologie. 
+		
+			Si un routeur reçoit un paquet multicast par une interface qui est le lien qui aurait été utilisé pour atteindre la source du paquet, alors le paquet a suivi le plus court chemin, et donc on le propage sur tous les autres liens. Sinon, on ignore le paquet.
+			
+			\dessin{133}
+			
+			Le résultat de ce comportement est un SPT renversé, ce qui peut être pénalisant pour des liens asymétriques. On a cependant toujours un problème : on a des routeurs qui ne comptent pas de membre dans le groupe et qui forwardront quand même les paquets (ce soucis est réglé par le pruning).
+			
+			\subsubsection{Reverse Path Forwarding amélioré}
+			
+			%On peut l'améliorer en vérifiant si le routeur auquel on veut broadcaster le paquet se trouve sur le chemin le plus court entre le routeur en question et la source (il doit se mettre à la place de B).			
+			
+			L'idée est qu'un routeur n'enverra pas le paquet s'il n'est pas lui-même sur le chemin le plus court entre le routeur en aval et la source.
+		
+		
+			\dessin{134}		
+		
+			Un routeur peut le savoir s'il lance un protocole link-state ou distance vector avec le poison reverse. Ainsi, les paquets sont transmis une seule fois sur l'arbre de plus court chemin renversé.
+			
+			Le routeur pourrait calculer un nouveau spanning tree en utilisant un algorithme à état de lien et en prenant la place du routeur. S'il est sur le chemin le plus court, il enverra le paquet, sinon il ne le fera pas. Il y a un plus grand coût en terme de calcul, mais on économise de la bande passante.
+				 
+			La différence avec un algorithme à vecteur de distances est qu'on ne connaît que le voisinage. Cependant, grâce au poisoned reverse, on saura si on est sur le chemin le plus court : si la distance du routeur à vérifier à la source est infinie.
+		
+			Il y a un risque de confusion si le routeur en aval a le choix entre plusieurs plus court chemins vers la source (par exemple, à gauche, ECA et EBA sont tous les deux des plus courts chemins vers A ; il y a un risque que B et C ne forwardent aucun paquet à E, car ils pensent que l'autre va le faire).
+			
+			La solution est de quand même forwarder, ce qui fait que des duplicata sont possibles.
+				
+			\subsubsection{Reverse Path Forwarding avec pruning}
+			
+			Il est possible que l'arbre de forwarding contienne des sous-arbres qui n'ont pas de membres dans le groupe. Il est donc inutile de leur envoyer des datagrammes.
+			
+			L'idée est que les routeurs qui ne comptent pas de membre envoient des messages dit "prune", qui empêche l'envoi de ces datagrammes.
+			
+			\dessin{135}
+					
+			L'arbre est ainsi optimal si on le considère inversé.
+		
+			\subsubsection{Table de forwarding multicast}
+			
+			Pour une table de forwarding unicast, on a l'association \texttt{préfixe d'IP de destination} $\rightarrow$ \texttt{port de sortie}.
+			
+			Une entrée d'une table de forwarding multicast est de la forme
+			
+			\begin{center}
+\texttt{(IP source, IP multicast de destination)} : \texttt{port d'entrée} $\rightarrow$ $\lbrace$\texttt{ensemble de port de sortie}$\rbrace$
+\end{center}
+			
+			On a une entrée par paire source-destination. Si le port d'entrée ne correspond pas, on jette le paquet (mécanisme de reverse path forwarding).
+		
+			L'adresse IP source doit être spécifiée, car il y a un arbre par IP source dans un routeur.
+		
+		% 28-9-2011
+		
+			L'avantage de la technique source-based est que c'est facile à implémenter et l'arbre est optimal, mais dans le sens inverse uniquement (destination vers source). Cela pose problème si les métriques ne sont pas les mêmes.		
+		
+		
+		\subsection{Center-based}
+		
+		%Création d'un arbre unique, qui sera utilisé par toutes les sources. Plus scalable car moins d'informations nécessaires que pour la méthode source-based. Il s'agit également d'un spanning tree, qui doit être minimal.
+		
+		%Il faut déterminer le meilleur arbre ; on définit le Steiner tree, l'arbre de coût minimal (avec des coûts sur tous les liens des noeuds). Le problème est NP-complete dans le pire des cas, c'est-à-dire qu'il est impossible de trouver une méthode très efficace, mais grâce à d'excellents heuristiques il est possible d'arriver à une solution correcte assez rapidement.
+		
+		%Peu utilisé à cause de la complexité, mais aussi car il faut beaucoup d'informations sur le réseau et car il faut relancer l'algorithme à chaque fois qu'un routeur entre/quitte un groupe, avec toute la complexité derrière.
+		
+		
+		On va calculer un arbre dit de Steiner : c'est l'arbre de coût minimal connectant tous les routeurs possédant des membres d'un groupe. C'est un problème NP-complete, avec d'excellents heuristiques. Cet arbre sera unique et commun à tous les routeurs.
+		
+		On va désigner un routeur comme le centre de l'arbre. Pour le rejoindre, les edge routeurs doivent envoyer un message unicast de type join, adressé au routeur central.
+		
+		Le message est analysé par les routeurs intermédiaires, et forwardé vers le routeur central. Il ne sera plus forwardé si on arrive à une branche de l'arbre, ou si on arrive au centre. Le chemin parcouru par le message formera une nouvelle branche.
+		
+		\dessin{136}
+				
+		Si une source veut envoyer un paquet à un groupe, il va l'envoyer à la racine, qui va le forwarder à tout l'arbre. La source a donc besoin de deux adresses : celle du groupe et celle de la racine. Cependant, avec seulement l'adresse du groupe, le paquet sera dropé au premier routeur, car il n'y aura pas d'entrée dans la table de forwarding.
+		
+		%Avec seulement l'adresse du groupe, le paquet sera dropé au premier routeur, car il n'y aura pas d'entrée dans la table de forwarding. Le paquet multicast est encapsulé dans un paquet unicast IP vers le centre de l'arbre (encapsulating/tunneling)
+		
+		Pour faire parvenir le paquet au centre, la source va utiliser l'encapsulation/tunneling : le paquet multicast va être placé à l'intérieur d'un paquet unicast IP, qui sera envoyé au centre. Le centre va supprimer le header unicast et envoyer le paquet multicast aux membres du groupe.
+		
+		\dessin{128}
+		
+		Les entrées de la table d'acheminement multicast auront la forme suivante :
+		
+		\begin{center}
+	(\texttt{*, IP multicast de destination}) : \texttt{port d'entrée} $\rightarrow$ $\lbrace$ \texttt{ensemble de port de sortie} $\rbrace$
+\end{center}
+		
+		La table d'acheminement est similaire, mais l'adresse source n'est pas nécessaire pour le forwarding (utilisation d'une wildcard). Le paquet doit également venir d'un port "appartenant" à l'arbre.
+		
+		Le chemin n'est pas optimal, car il y a un détour à effectuer avant de flooder le réseau. Par contre, il y a peu d'entrées multicast dans la table d'acheminement des routeurs ; une entrée est valide pour toutes les sources, et il y a une entrée par destination (et non plus par paire source-destination).
+		
+		Cette technique n'est pas utilisée en pratique car
+		
+		\begin{itemize}
+			\item la complexité en temps de calcul est élevée,
+			\item des informations sur tout le réseau sont nécessaires, et
+			\item l'arbre est monolithique ; il faudra relancer l'algorithme chaque fois qu'un routeur rejoint/quitte le groupe.
+		\end{itemize}
+		
+	\section{Exemples de protocoles multicast}
+	
+		\subsection{DVMRP}
+		
+		DVMRP est un protocole "historique", basé sur des vecteurs de distances. Il utilise un arbre source-based, avec le Reverse Path Forwarding et du pruning.
+		
+		DVMRP est un protocole à part qui va construire sa table d'acheminement multicast à côté de celle des IP unicast. C'est une approche robuste, car on suppose que tous les routeurs ne supportent pas nécessairement DVMRP, et on ne fait pas d'hypothèses sur l'unicast.
+		
+		Toutes les minutes, DVMRP relance les routeurs qui ont utilisé le pruning, cela permet de détecter les nouveaux membres. De plus, les routeurs peuvent notifier le routeur racine rapidement avec un mécanisme à part (IGMP), en supplément de la relance toutes les minutes.
+		
+		Historiquement, il tournait au niveau des hôtes, car tous les routeurs ne l'implémentaient pas. Cela donnait un résultat similaire au peer-to-peer (multicast backbone).
+		
+		L'encapsulation/tunneling est utilisé pour traverser les liens entre deux noeuds du groupe multicast : tout est transparent pour les noeuds intermédiaires.
+		
+		\dessin{137}
+		
+		Les datagrammes multicast sont donc encapsulés dans des datagrammes "normaux" (pas avec une adresse multicast), et sont envoyés à travers un tunnel via de l'unicast IP "normal" jusqu'au routeur multicast. Ce dernier va alors décapsuler le datagramme pour retrouver le paquet multicast.
+			
+		\subsection{PIM - Protocol Independant Multicast}
+		
+		C'est le protocole le plus utilisé actuellement, et ne dépend pas d'algorithme de routage unicast spécifique. Il est compliqué car il utilise les deux approches pour construire l'arbre (source-based et center-based) et fonctionne sous deux modes :
+		
+		\begin{itemize}
+			\item dense : les membres du groupe sont considérés comme compactes, "proches" en terme de proximité. On considère aussi qu'on a a beaucoup de bande passante.
+			Du coup, on va supposer qu'un routeur est membre du groupe tant qu'il n'envoie pas un message de pruning. La construction de l'arbre multicast se fait sur base des données (RPF). La bande passante est consommée sans modération.
+			
+			
+			\item sparse : le nombre de réseau avec des membres d'un groupe est plus petit que le nombre de réseaux interconnectés ; les membres du groupes sont plus éparpillés, ou peu nombreux. La bande passante est considérée comme réduite.
+			
+			Ainsi, les routeurs ne font pas partie du groupe tant qu'ils ne l'ont pas explicitement indiqué. La construction de l'arbre multicast se fait par les récepteurs (center-based). La bande passante est utilisée avec parcimonie.
+		\end{itemize}
+		
+		Naturellement, si le groupe est dense, beaucoup de routeurs sont intéressés. Il est donc mieux d'effectuer une sorte de broadcast et d'utiliser le pruning, il y aura moins de gaspillage qu'avec un groupe peu dense.
+		
+		\subsubsection{Dense mode}
+		
+		En mode dense, PIM n'utilise pas son propre protocole unicast (contrairement à DVMRP), et ne connaît pas la technologie unicast. Du coup, il n'implémente pas le cleverer RPF (Reverse Path Forwarding, où en plus de vérifier l'interface d'arrivée du paquet, on veut savoir si un routeur voisin acceptera ou non notre paquet, en utilisant son FIB), cela pourrait mener à des anomalies.
+		
+		Pour rappel, la table de routage (RIB, routing information base) est utilisée comme structure de données pour générer la table de forwarding (FIB, forwarding information base), qui redirige les paquets vers les interfaces.
+		
+		En multicast, soit on recréé un RIB, soit on réutilise le RIB de l'unicast (car il contient plus d'infos intéressantes que le FIB). Pour être indépendant, il faut éviter de reprendre RIB, et un protocole comme PIM peut réutiliser le FIB.
+		
+		La version cleverer est impossible à implémenter, car on ne dispose que du FIB du noeud courant, et pas le RIB courant ni le FIB des routeurs voisins. C'est moins optimal, mais plus robuste.
+		
+		
+		\subsubsection{Sparse mode}
+		
+		On va utiliser l'approche center-based, les messages join sont envoyés à un point de rendez-vous (RP). Après qu'un routeur ait rejoint l'arbre, il passe sur un arbre de source spécifique, ce qui augmente les performances (moins de concentration, chemins les plus courts).
+		
+		\dessin{138}
+		
+		Les sources vont donc envoyer les données en unicast au point de rendez-vous, qui va les envoyer aux arbres dont la racine est le point de rendez-vous.
+		
+		Le point de rendez-vous peut envoyer des messages stop s'il n'y a aucun destinataire attaché.
+		
+		Le terme "center" est remplacé par "rendez-vous" car , dans le cas de l'approche center-based, le centre peut recevoir beaucoup de trafic, et s'il tombe en panne, toute la connectivité est perdue. Ici, le point de rendez-vous ne supporte pas tout le trafic.
+		
+		Certains routeurs dans un domaine sont ainsi configurés comme étant des candidats pour des points de rendez-vous. C'est un BSR (BootStrap Router) qui va être élu dynamiquement (parmi les points de rendez-vous) dans un domaine PIM. Ces élections sont basées sur des priorités et sur l'adresse IP la plus importante.
+		
+		Le BSR va alors allouer les groupes aux points de rendez-vous, et distribuer les mappings \texttt{RP} $\rightarrow$ $\lbrace$ groupes $\rbrace$ à tous les routeurs du domaine, via des BSM (BootStrap Messages) envoyés périodiquement. Des adresses IP multicast sont réservées pour ces usages.
+		
+			
+		Il y a une nouvelle élection si le routeur sélectionné tombe en panne (mécanisme keep-alive).
+		
+		Chaque RP envoie périodiquement des messages aux routeurs qui y sont connectés, et signifiant qu'il est toujours "vivant". Ainsi, si les routeurs ne reçoivent plus ces messages (après un timeout), ils tenteront de trouver un nouveau RP, et de s'y joindre.
+		
+		
+		L'arbre peut être étendu à des routeurs pour éviter trop de tunneling. De plus, il est possible d'envoyer des messages dans le cas où il n'y a pas de récepteur, pour éviter du trafic inutile.
+		
+		\subsubsection{Exemple détaillé}
+				
+		\dessin{139}
+		
+		\dessin{140}
+		
+		\dessin{141}
+		
+		\dessin{142}
+		
+		\dessin{143}
+		
+		\subsubsection{Mécanisme de rafraîchissement}
+		
+		Pour la version Sparse de PIM, le même message est utilisé pour joindre et pruner : c'est un message Join/Prune (des bits dans le message lèvent l'ambiguïté). Ainsi, le même message peut joindre et pruner en même temps.
+		
+		Chaque routeur envoie périodiquement des messages Join/Prune à ses voisins pour chaque entrée active de sa table. Un message est aussi envoyé à chaque fois qu'une nouvelle entrée est établie.
+		
+		Il n'y a pas une connaissance explicite de l'ACK des messages de join/prune ; les pertes de paquets sont récupérées avec le mécanisme de rafraîchissement périodique.
+		
+		Si les tables unicast changent, les arbres multicast doivent être mis à jour au prochain rafraîchissement ; PIM sera relancé, car il est entièrement basé sur la table d'acheminement.

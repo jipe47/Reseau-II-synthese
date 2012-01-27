@@ -1,0 +1,27 @@
+Réseau II - Synthèse
+
+par Jean-Philippe Collette (jeanphilippe.collette [at] gmail [dot] com)
+-------------------------------------------------------------------------------
+
+Ce dépôt est consacré à une synthèse pour le structure des réseaux informatiques
+et multimédia, donné par monsieur Leduc.
+
+La synthèse a été réalisée par moi-même, et se base sur les transpa-
+-rents fournis par monsieur Leduc à l'adresse suivante :
+
+	http://www.montefiore.ulg.ac.be/~leduc/cours/structure-multimedia.html
+
+Il s'agit en fait de la complétion de mes prises de notes (notes.tex). Les
+parties qui correspondent à chaque question de l'examen oral ont été extraites
+et placées dans un fichier à part (main.tex). Les réponses aux questions sont
+*beaucoup* plus fiables que mes notes, car certaines parties sont complètement
+mélangées, et pourraient prêter à confusion.
+		
+Le but de ce dépôt est de faciliter les petites corrections, les améliorations,
+etc au fil des années. De ce fait, merci de
+
+	- vérifier ce que vous envoyez,
+	- relire vos envois (orthographe, grammaire),
+	- fournir des descriptions un minimum précises sur ce qui est modifié, et
+	- participer de manière constructive et respectueuse du travail des autres.
+

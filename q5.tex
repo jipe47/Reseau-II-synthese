@@ -1,0 +1,261 @@
+\chapter{Mobilité : principes - routage - Mobile IP - réseaux cellulaires}
+
+\section{Cellular Internet Access}
+	
+	Le nom "cellular" vient de la forme des couvertures des antennes.
+	
+	\dessin{45}
+	
+	Un MSC (mobile switching center) est sorte de routeur, mais au niveau téléphonique. Il connecte les cellules à un réseau de plus grande ampleur. Il gère la mise en place des appels et la mobilité.
+	
+	Une cellule est une petite région géographique, composée d'une base station, d'utilisateurs mobiles (attachés à la base station) et d'une interface sans support physique entre la base station et les utilisateurs.
+	
+  Lorsqu'on veut passer un appel, un périphérique utilise un canal dit ouvert. S'il n'y a pas de collision, un canal sera réservé et communiqué au périphérique.
+  
+  Il y a plusieurs manières de partager le spectre radio d'un périphérique mobile à une base station :
+  
+  \begin{itemize}
+    \item on divise la bande de fréquences en sous-intervalles, qui sont ensuite divisés en slots "temporels" ; c'est un mélange de TDMA et de FDMA. La technologie GSM utilise cet manière de partager le canal, et est présente plutôt en Europe.
+    
+    \dessin{46}
+    
+    \item CDMA, utilisé aux USA
+  \end{itemize}
+  
+  \subsection{Standards}
+  
+  La première génération de systèmes cellulaires était la 1G, uniquement analogique, et qui est à présent éteinte. 
+  
+  	\subsection{2G}
+  	
+  	La 2G a introduit l'aspect digital, mais ne concernait toujours que la voix.
+	
+	\dessin{47}
+	
+	\subsection{2.5G}
+  	
+	Après la seconde génération (2G), il y eu une génération intermédiaire (2.5G), car la 3G a été standardisée, mais n'a pu être mise en place rapidement. La 2.5G est destinée à ceux qui n'ont pu attendre, la technologie GSM étant très lente (13K), ce qui la limitait à la voix.
+	
+	La technologie GPRS est une évolution du GSM ; au lieu d'utiliser un seul canal, elle va en utiliser plusieurs. Vu que des paquets sont généralement envoyés en burst (et non pas un flux constant), il n'est pas nécessaire de réserver complètement de nombreux canaux, ce qui n'est pas compatible avec le GSM. Pour parer à cela, on va réserver des canaux pour les données et d'autres pour la voix. Ils sont ainsi alloués dynamiquement aux périphériques GPRS en fonction des besoins.
+  
+	EDGE a été aussi basé sur GSM, un peu plus tard que GPRS, avec un débit plus élevé. La technologie CDMA américaine a également évolué.
+	
+	\dessin{48}
+	
+	%L'idée était que le réseau gérant les données opère en parallèle au réseau existant. Cela permet ainsi de ne pas devoir changer quoi que ce soit au réseau consacré à la voix.
+	
+	La voix utilise le même chemin (via BSC et MSC), mais les données sont détournées vers un SGSN. Cet installation est bon marché à mettre en place, les structures les plus chères (antennes) restent inchangées et seul quelques périphériques sont à installer à côté.
+  
+	\subsection{3G}
+	
+	La 3G, appelée aussi UMTS (universal mobile telecommunications service) en Europe, possède de bonnes propriétés pour les données et la voix. Elle combine le FDMA/TDMA et le CDMA : chaque slot temporel est assigné à plusieurs périphériques. Le CDMA-2000 américain combine aussi plusieurs technologies pour également augmenter les débits.
+      
+  
+	\section{Adressage et routage vers des utilisateurs mobiles}
+  
+	\dessinS{49}{.65}
+  
+	N'est pas considéré comme mobile le fait de se déplacer tout en gardant un contact avec le même point d'accès.
+  
+	Le fait d'être nomade désigne principalement la connexion/déconnexion à un réseau, ce qui implique notamment un changement d'IP. Cependant, grâce à DHCP, il n'y a pas vraiment de mécanisme à mettre en place.
+  
+	La "vrai" mobilité signifie passer d'un point d'accès à un autre tout en maintenant la connexion.
+  
+	Terminologie :
+  
+	\begin{itemize}
+		\item home network : le domicile permanent du mobile ;
+		\item permanent address : elle ne change pas, quelque soit le réseau dans lequel on se trouve. Cela implique qu'être dans un réseau qui n'est pas dans un bon subnet fera qu'on ne sera pas joignable. Il est donc nécessaire d'avoir une autre adresse (care-of-address)
+		\item home agent : l'entité qui offre les fonctionnalités de mobilité au mobile, quand il est à porté.
+		\item foreign agent : l'agent d'un réseau étranger
+		\item care-of-address : adresse utilisée dans un réseau étranger ; selon la technologie, assignée au routeur ou au périphérique.
+	\end{itemize}
+  
+	\dessin{50}
+	
+%	\dessin{51}
+  
+	La recherche du correspondant peut donner des solutions extrêmes (recherche exhaustive, contacter des périphériques en amont du correspondant, attendre que le correspondant indique sa position, etc), elles ne sont pas scalables. Par exemple, pour la 3ème solution, tous les contacts potentiels doivent faire savoir où ils sont.
+	
+	Il y a deux approches pour gérer la mobilité : délaisser la gestion aux routeurs ou aux systèmes d'extrémité.
+  
+  	\subsection{Mobilité par les routeurs}
+  	
+	Un périphérique garde une adresse permanente, même dans un réseau étranger. Il y aura deux entrées dans la table d'acheminement des routeurs intermédiaires : une pour le subnet home, une autre pour le périphérique mobile, que l'on a "volée" du réseau d'origine et qu'on a temporairement donnée au réseau étranger. Ainsi, le routeur étranger communiquera, avec BGP, qu'il a accès au subnet étranger ET l'adresse individuelle du périphérique mobile.
+  
+	Cela fonctionne grâce à la règle de matching du plus long préfixe, de plus on ne change rien d'autre. Enfin, cela permet d'éviter de modifier les systèmes d'extrémité.
+	
+	Cependant, s'il y a des millions de périphériques mobiles, il y aura autant d'entrées dans les tables d'acheminement.
+	
+	\subsection{Mobilité par les systèmes d'extrémité}
+	
+	Une première étape est de s'arranger pour que le home agent sache où se trouve le mobile, et que le foreign agent sache qu'il y a un mobile dans le subnet.
+	
+	\dessin{52}
+	
+	\begin{enumerate}
+		\item Le périphérique mobile communique au routeur étranger qu'il est entré dans son réseau, ainsi que son adresse permanente. Il découvrira alors le réseau d'origine.
+		\item Ce routeur étranger va contacter l'home agent pour signifier qu'il peut atteindre le périphérique mobile. L'home agent saura ainsi comment atteindre le périphérique mobile.
+	\end{enumerate}
+  
+	Après cette enregistrement, il y a deux manières de gérer la mobilité : par le routage indirect et direct.
+  
+  		\subsubsection{Routage indirect}
+		Avec le routage indirect, il y a une communication entre le correspondant et le mobile à travers l'home agent, qui forward les données.
+	
+		\dessin{53}
+		
+		Un mobile dispose donc de deux adresses : une adresse permanente (utilisée par le correspondant et qui est transparente, quelque soit la localisation), et une care-of-address, utilisée par l'home agent pour forwarder les datagrammes.
+  
+		Un paquet dont l'adresse source est celle du périphérique mobile sera ainsi envoyé au home agent, qui le transmettra au routeur étranger en l'empaquetant (tunneling). Le routeur étranger aura une entrée particulière pour le périphérique mobile. Il connaîtra son adresse MAC (grâce au contact qu'il aura eu avec lui au préalable), il pourra l'envoyer.
+  
+		Si le périphérique mobile doit répondre, il va répondre en utilisant le routeur étranger mais en utilisant comme adresse source son adresse permanente. 
+	
+		Il peut y avoir des problèmes, car le routeur étranger pourrait croire qu'il s'agit d'une source pour une attaque (spoofing), et pourrait ne pas transmettre de réponse. Mais on pourrait mettre une exception comme quoi on autorise les paquets envoyés à partir d'adresses IP permanentes.
+  
+		Ce système est transparent pour le périphérique correspondant, car les adresses restent les mêmes. Cependant, il s'agit d'un routing triangulaire, ce n'est pas efficace, il pourrait y avoir un énorme détour alors que le correspondant est proche.
+  
+		Un avantage est que si le périphérique se déplace, il y aura un nouveau subnet avec un nouveau routeur étranger, mais tout restera transparent pour le correspondant. Une perte de paquets peut survenir, leur gestion revient à TCP/UDP.
+		
+		Supposons que le mobile change de réseau. Il s'enregistrera alors avec le nouveau foreign agent, qui va contacter le home agent. Ce dernier va mettre à jour la care-of-address pour le mobile, et les paquets continueront à être forwardés, en utilisant la nouvelle adresse. Les connexions en cours sont ainsi facilement maintenues.
+	
+		\subsubsection{Routage direct}
+  
+		On va sacrifier la transparence pour obtenir un adressage non triangulaire, et donc plus efficace. Le dialogue entre le périphérique mobile et le routeur étranger, et entre le routeur étranger et le home agent est préservé. Cependant, le correspondant "demandera" au home agent si le périphérique mobile est accessible, sinon de communiquer l'adresse du routeur étranger.
+  
+		\dessin{54}
+ 		
+ 		Ce routage permet de supprimer le problème de routage triangulaire, mais on perd la transparence.
+ 		
+		Quand un périphérique mobile change de subnet, le nouveau routeur étranger va, en plus de contacter le home agent, contacter l'ancien routeur étranger pour que le trafic soit redirigé vers le nouveau subnet. Le problème est qu'il peut y avoir de nombreux changements de réseau, et donc de routeurs étrangers qui exécutent des redirections.
+  
+		On va pour cela maintenir le premier routeur étranger (anchor foreign agent), le correspondant maintiendra le contact avec lui. Ensuite, les routeurs étrangers intermédiaires (entre le premier routeur étranger et le périphérique mobile) seront retirés de la chaîne.
+  		
+		\dessin{55}
+		
+		Le routage direct n'implique ainsi plus le home agent ; ce dernier n'est contacté qu'une seule fois.
+  
+		Chacun de ces types de routage a des avantages et des inconvénients, en terme de transparence et d'efficacité.
+  
+
+	\section{Mobile IP}
+		
+	La technologie mobile IP est définie par une RFC, et utilise
+		
+	\begin{itemize}
+		\item la découverte d'agent
+		\item l'enregistrement avec l'home agent, et
+		\item le routage indirect.
+	\end{itemize}
+	
+		\subsection{Découverte d'agent}
+	
+		Lorsqu'un périphérique mobile entre dans un nouveau réseau (qu'il soit étranger ou home), il doit connaître l'identité de l'agent. Cela peut se faire de deux manières :
+		
+		\begin{itemize}
+			\item par une initiative de l'agent, ou
+			\item par une sollicitation de l'agent.
+		\end{itemize}
+  	
+  			\subsubsection{Initiative de l'agent}
+			Un agent utilise des paquets ICMP étendus pour déclarer qu'il est un home ou un foreign agent. On communique également une care-of-address.
+  	
+			\dessin{57}
+  	
+			L'agent mobile envoie à un agent étranger un message (registration request) qui indique l'adresse du home agent. L'agent étranger va alors transmettre la requête à l'home agent.
+  	
+			L'home agent va alors envoyer un message de confirmation (registration reply) au foreign agent, qui va également le communiquer au mobile agent.
+		
+			\dessin{58} 
+		
+			\subsubsection{Sollicitation d'un agent}
+			
+			Le périphérique mobile broadcast des messages de sollicitation, qui sont simplement des messages ICMP. 	
+		
+		\subsection{Enregistrement avec l'home agent}
+		
+		\subsection{Routage indirect}
+		\dessin{56}
+  
+		
+  	
+  	
+  	
+	\section{Mobilité dans les réseaux cellulaires}
+	
+	
+	
+	Chaque opérateur possèdent un réseau cellulaire, avec leurs propres antennes, qui couvrent le territoire.
+	
+	Il y a deux types de réseau :
+	
+	\begin{itemize}
+		\item le home network : le réseau cellulaire auquel on a souscrit. Dedans se trouve une base de données (HLR, home location register) qui contient des informations sur les utilisateurs (numéros de téléphone, profil, services, billing, etc), ainsi que des informations sur la localisation d'un utilisateur dans le réseau, autrement dit dans quelle cellule on se trouve.
+		
+		\item le visited network, le réseau dans lequel le mobile se trouve. Il contient également une base de données (VLR, visitor location register), avec des informations sur chaque utilisateur du réseau. Il peut être le même réseau que le home network.
+	\end{itemize}
+
+	Déroulement d'un appel :
+	
+	\begin{enumerate}
+		\item un appel est redirigé vers le réseau du correspondant (home MSC)
+		\item le hMSC va consulter la BDD et regarder s'il se trouve dans le réseau. Il récupère le roaming number (sorte de care-of-adrress) pour localiser un mobile.
+		\item en utilisant le roaming number, le hMSC va rediriger l'appel vers le MSC du bon réseau.
+		\item l'appel est dirigé vers le correspondant à partir du MSC, en utilisant la BDD.
+	\end{enumerate}
+	
+	\dessin{59}
+	
+	\subsection{Gestion d'un handoff}
+	
+	Le but du handoff est de router un appel via une nouvelle base station, mais sans l'interrompre.
+		
+	Raisons pour changer de BSS :
+	
+	\begin{itemize}
+		\item un signal plus puissant avec une autre BSS, afin d'économiser de la batterie et d'avoir une meilleur connectivité ;
+		\item load balance, répartir le trafic de manière optimale ;
+		\item un comportement (policy) décidé par l'opérateur. Cependant, tous les mobiles doivent pouvoir changer de BSS de la même façon, quelque soit la raison.
+	\end{itemize}
+	
+	Il faut gérer le passage d'un BSS à un autre. C'est l'ancien BSS qui va déclencher le changement, lorsqu'il détectera que le signal se détériore et/ou si la cellule commence à être surchargée.
+	
+	\dessinS{60}{.85}
+	
+	\begin{enumerate}
+		\item l'ancien BSS doit communiquer qu'il y a un changement de BSS, et doit envoyer un nouveau (ou plusieurs) BSS (le choix se fera selon la police de l'opérateur). Il faut cependant être le plus précis possible dans le choix du BSS, sinon à la seconde étape il y aura des réservations de ressources inutiles ;
+		\item le MSC met en place un chemin, il alloue des ressources pour atteindre le nouveau BSS ;
+		\item le nouveau BSS alloue un canal radio pour le mobile ;
+		\item le nouveau BSS signale au MSC et au vieux BSS qu'il est prêt pour le changement ;
+		\item le vieux BSS informe le mobile qu'il doit effectuer le handoff sur le nouveau BSS ;
+		\item le mobile contact le nouveau BSS pour activer le nouveau canal ;
+		\item le mobile communique à travers le nouveau BSS au MSC que le handoff est complet. Ce dernier va alors rediriger l'appel ;
+		\item les ressources allouées au MSC et au vieux BSS sont libérées.
+	\end{enumerate}	
+	
+	Les stratégies d'allocations doivent aussi être précises, pour réserver correctement des ressources au bon moment. Par exemple, on pourrait mettre la priorité aux agents qui ont un appel en cours, afin de ne pas le perdre, en désavantageant les nouveaux appels. L'appel peut toujours être perdu s'il n'y a pas de canal libre dans le nouveau BSS.
+		
+	Ce principe s'applique quand on passe d'un MSC à un autre, mais sous le même opérateur. On va également définir un anchor MSC. Comme pour mobile IP, on va éviter de chaîner les MSC, les MSC intermédiaires seront supprimés. Il y aura des signaux supplémentaires pour rediriger l'appel vers les MSC, mais il y a moyen de ne pas avoir plus de trois redirections.
+	
+	\dessinS{61}{.8}
+	
+	Il y aura au maximum 3 MSCs sur le chemin de l'appel.
+	
+	Un anchor MSC est utile, car pour changer le chemin home MSC vers un MSC, il y a beaucoup plus de ressources à mobiliser. Mobile IP est avantagé par rapport à ceci, c'est plus flexible car il n'y a pas de ressources bloquées.
+	
+	Si on passe d'un réseau à un autre, mais qui appartient à un autre opérateur, on perdra l'appel.
+	
+	\dessin{62}
+		
+	\section{Impact sur les protocoles de plus haut niveau}
+	
+	Logiquement/fonctionnellement, l'impact est minimal, vu que les adresses IP ne changent pas, tout est transparent. Le modèle du best effort reste inchangé, et TCP et UDP peuvent fonctionner sur un support sans-fil mobile.
+	
+	Cependant, vu qu'il y a des pertes de connectivité, les délais dus aux erreurs binaires et aux pertes de paquets sont plus grands, il y aura plus de retransmissions.
+	
+	TCP va en particulier mal réagir, car il va interpréter une perte de paquet comme de la congestion, alors que cela pourrait être juste un problème de mobilité. La robustesse n'est pas touchée, mais le débit sera plus bas s'il y a trop de perte de connectivité.
+	
+	Il faudrait que TCP puisse distinguer la "vrai" congestion, en séparant le cas d'une perte due à la connectivité. Il est difficile de communiquer un feed-back explicite du réseau en citant l'erreur et son origine (par exemple, l'erreur pourrait être dans l'identifiant d'un paquet). Cela peut être amélioré (inférence), mais c'est un gain de complexité.
+	
+		
+	

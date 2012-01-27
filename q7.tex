@@ -1,0 +1,218 @@
+\chapter{Applications multimédias sur Internet : mécanismes utilisés pour améliorer la qualité}
+
+	Le but est d'améliorer les interactions entre les applications à partir du service de best effort d'IP.
+	
+	Pour la téléphone sur Internet, on va utiliser les silences dans les conversations pour modifier les paramètres des protocoles. On définit un talk spurt comme une période où un interlocuteur parle.
+	
+	Ainsi, pendant un talk spurt, on utilise le débit de 64 kbps ; les paquets ne sont générés que lors d'un talk spurt. On a des morceaux de 20 ms à un débit de 8KBytes/sec, soit 160 bytes de données.
+	
+	Les problèmes surviennent lors de la perte de paquet (network loss), due à de la congestion, et du délai (delay loss), où les paquets arrivent trop tard pour être joués par le récepteur. Le problème avec cet encodage est que la perte d'un paquet entraîne la perte de 20ms de voix. 
+	
+	Cela pourrait être pire avec certains schémas de compression qui peuvent rendre le schéma plus fragile. Par exemple, si on perd une frame I d'une vidéo MPEG, on perd aussi les frames B et P qui y réfèrent. Si on n'utilisait que des frames I, il n'y aurait pas d'effet de cascade, mais la compression serait mauvaise. 
+	
+	De plus, certaines frames sont plus lourdes que d'autres (une frame I générera plus de paquets IP qu'une frame B ou P). Selon la manière d'organiser la répartition des blocs dans les paquets, on peut avoir des précautions à prendre si on perd un paquet, qui ferait donc perdre des blocs. Les dépendances entre blocs rendent le schéma moins robuste face à la perte de paquet.
+	
+	Pour de la téléphonie sur Internet, on considère que le délai maximum tolérable est de 400ms. Les pertes de paquet sont tolérables si le ratio est compris entre 1\% et 10\%. Pour deux paquets consécutifs, la différence des temps de transmission doit valoir environ 20ms pour être tolérable.
+	
+		%\subsection{Utiliser UDP}
+		
+		%[...]	
+	
+		\section{Utilisation d'un délai de playout}
+		
+		\dessin{75}
+		
+			\subsection{Playout fixé}
+			On pourrait définir un délai de playout fixe ; supposons qu'un récepteur s'attende à jouer chaque morceau $q$ ms après qu'il soit généré. Si le morceau a un timestamp $t$, il sera joué au temps $t + q$. Si le morceau arrive après le temps $t + q$, les données arrivent trop tard pour être jouées, elles sont donc perdues.
+		
+			On a donc un équilibre à trouver entre un grand $q$, qui gère mieux la perte de paquet, et un petit $q$ qui offre une meilleur interactivité.
+		
+			Supposons qu'un émetteur envoi des paquets toutes les 20ms durant un talk spurt. Le premier paquet est reçu au temps $r$ et sera joué au temps $p$ pour un premier délai de playout, en $p'$ pour un second délai de playout plus long.
+		
+			\dessinS{79}{.85}
+		
+	
+			\subsection{Playout adaptatif}
+			
+			Le but est de minimiser le délai de playout tout en gardant un perte minimale.
+			
+			L'idée est d'utiliser un playout adaptatif, en estimant le délai du réseau et en ajustant le délai de playout au début de chaque talk spurt. Les périodes de silences sont compressés.
+			
+			On va utiliser moyenne exponentielle, car plus on avance dans les échantillons plus les échantillons anciens ont moins d'importance ($(1 - u)^\alpha$). Cette méthode est également utilisée pour estimer le RTT de TCP.
+			
+			Soient
+			
+			\begin{itemize}
+				\item $t_i$ le timestamp de génération du $i$ème paquet,
+				\item $r_i$ le temps auquel le paquet $i$ est reçu par le récepteur,
+				\item $p_i$ le temps auquel le paquet $i$ est joué par le récepteur,
+				\item $d_i$ l'estimation du délai du réseau moyen après avoir reçu le $i$ème paquet.
+			\end{itemize}
+			
+			On a que $r_i - t_i$ est le délai du réseau pour le $i$ème paquet, et donc 
+			
+			$$d_i = (1 - u) d_{i - 1} + u(r_i - t_i)$$
+			
+			où $u$ est une constante fixée (par exemple $u = 0.01$).
+			
+			On peut également calculer la variance moyenne :
+			
+			$$v_i = (1 - u) v_{i - 1} + u \vert r_i - t_i - d_i\vert$$
+			
+			Pour chaque paquet reçu, on va donc estimer $d_i$ et $v_i$, mais ça ne sera utilisé qu'une fois au début d'un talk spurt (les paquets restant du talk spurt sont joués périodiquement). On a alors le délai de playout estimé $p_i$ :
+			
+			$$p_i = t_i + d_i + K v_i$$
+		
+			avec $K$ une constante positive.
+		
+			Un talk spurt peut être détecté lorsqu'on reçoit des paquets espacés de 20ms. Lorsqu'on a un trou de plus de 20ms entre deux paquets, on a un silence. 
+			
+			S'il n'y a pas de pertes, le premier paquet d'un talk spurt peut être détecté en regardant si la différence de timestamp de deux paquets consécutifs vaut plus de 20 ms.	Cependant, à cause de la perte de paquet, on pourrait considérer des périodes de silence qui n'en sont pas. En ajoutant un numéro de séquence aux paquets, on peut différencier les pertes et les silences.
+			
+			Ainsi, un talk spurt commence si la différence de timestamp de deux paquets consécutifs est de plus de 20ms et s'il n'y a pas de trou dans la séquence de numéros.
+		
+			Les clocks des deux systèmes peuvent être décalées, mais la différence de temps restera constante et sera considérée comme un délai. Une clock parfaitement synchronisée vaudra $t_i$, une désynchronisée aura $t_i + \Delta$. Il y a une erreur dans le calcul $r_i - t_i$, mais elle sera constante. $d_i$ aura aussi le délai supplémentaire, vu qu'il effectue une moyenne sur des valeurs qui comportent l'erreur.
+		
+			On a alors $t_i \rightarrow t_i + \Delta$, $r_i - t_i \rightarrow r_i - t_i - \Delta$, $d_i \rightarrow d_i - \Delta$.
+		
+			La variance n'est pas impactée ; $r_i - t_i - d_i \rightarrow r_i - t_i - \Delta - d_i + \Delta$.
+		
+			Au niveau du playtime, $p_i = t_i + d_i + K v_i \rightarrow t_i + \Delta + d_i - \Delta + K v_i = p_i$ ; l'erreur faite sur le délai estimé est supprimée car elle est ajoutée au mauvais timestamp, elle se neutralise. Donc les clocks de deux systèmes n'ont pas besoin d'être synchronisées.
+	
+	
+	
+		\section{Récupération de perte de paquet}
+		
+			\subsection{Schéma simple : FEC}
+			
+			FEC signifie Forward Error Correction. L'idée est d'insérer un paquet FEC dans un groupe de $n$ paquets. Si l'un d'eux est perdu, on doit pouvoir le reconstruire à partir des autres paquets et du paquet FEC.
+			
+			\dessinS{80}{.65}
+				
+			Pour créer le paquet FEC pour un groupe de $n$ paquets, on prend le XOR des $n$ paquets ; il agit comme des bits de parité pour chaque colonne. Les $n + 1$ paquets sont envoyés, en augmentant la bande passante de $\frac{1}{n}$. Le playout devra être suffisamment grand pour recevoir les $n + 1$ paquets.
+			
+			Si on perd un paquet, avec le FEC on connaîtra la parité de chaque colonne ; en comparant les colonnes des paquets reçus, on peut retrouver le bit de chaque colonne du paquet perdu (soit on a un nombre pair soit un nombre impair de 1).
+		
+			%[dessin 11]
+			
+			On a un équilibre à trouver : augmenter $n$ revient à
+			
+			\begin{itemize}
+				\item gaspiller moins de bande passante,
+				\item augmenter le délai de playout, et
+				\item augmenter la probabilité que deux ou plus morceaux soient perdus.
+			\end{itemize}
+		
+			Si on perd plus d'un paquet, le schéma est inutilisable.
+			
+		
+			\subsection{FEC: Reed-Solomon}
+			
+			Un code $RS(n,k)$ encode $k$ paquets source dans $n$ paquets.
+			
+			\dessinS{81}{.65}		
+			
+			On distingue plusieurs versions :
+			
+			\begin{enumerate}
+				\item une version systématique : pour $k$ paquets source, on ajoute $n - k$ paquets de redondance. Le schéma permet de perdre jusqu'à $n - k$ paquets, si on en perd plus, on ne peut pas tout reconstruire.
+			
+				\item une version optimale : le code est optimal si on peut perdre $n - k$ paquets etreconstruire les $k$ paquets ; les $k$ paquets originaux peuvent être récupérés, en supposant qu'on récupère au moins $k$ paquets parmi les $n$ envoyés, quels qu'ils soient.
+			
+			\end{enumerate}
+				
+					
+			\subsubsection{Code linéaire}
+			Cela peut se faire au moyen d'un système linéaire : on a $x$ le vecteur des $k$ paquets source. $G$ est une matrice $n \times k$ et $y$ est le vecteur des $n$ paquets transmis. On a alors
+
+
+			$$y = G x$$
+			
+			\begin{center}
+$	
+\begin{pmatrix}
+ \\ 
+ \\
+y \\
+ \\ 
+ \\
+ \\
+\end{pmatrix}_{n \times 1}$ = $\begin{pmatrix}
+1 & 0 & \dots & 0 \\ 
+0 & 1 & \dots & 0 \\ 
+\dots &   &   &   \\ 
+\alpha_{k + 1} &   &   &   \\ 
+  &   &   &   \\ 
+\alpha_n &   &   &  
+\end{pmatrix}_{n \times k}$ $\begin{pmatrix}
+  \\ 
+x \\ 
+ \\
+\end{pmatrix}_{k \times 1}
+$
+\end{center}
+
+			Les 1 en diagonale permettent de garder les paquets originaux. Les coefficients après créent des combinaisons linéaires.
+			
+			$G$ n'est pas inversible (matrice rectangulaire), or on aimerait utiliser le processus dans l'autre sens.
+			
+			%[dessin 14]
+			
+			Pour le décodage, soit $y'$ le vecteur des $k$ paquets reçus, quel qu'ils soient. $G'$ est la sous-matrice $k \times k$ de $G$ dont les lignes correspondent à ces paquets. On a alors
+			
+			$$x = G'^{-1} y'$$
+			
+			En fait, parmi tous les paquets que l'on reçoit dans $z$, il peut contenir des trous (paquets perdus). On va alors supprimer les lignes qui correspondent à ces indices. On peut en retirer jusqu'à ce qu'il en reste $k$, ce qui donne $y'$. Dès lors, $G'$ sera une matrice carrée, qui admet un inverse.
+			
+			\subsection{Autre schéma FEC}
+		
+			%[4-57]
+	
+			Pour un paquet $i$, on le compresse (PCM vers GSM par exemple) et on l'attache au paquet $i + 1$. Si un paquet est manquant, on peut utiliser la version low quality du paquet suivant. Il faut cependant, en cas de perte, attendre le paquet suivant.
+			
+			\dessinS{82}{.8}
+			
+			On peut généraliser en ajouter le paquet $i$ version low quality aux paquets $i + 1$, $i + 2$, etc.
+			
+			\subsection{Entrelacement de paquets}
+			
+			On découpe les 20ms en plusieurs parties, que l'on place dans des paquets de manière entrelacée (le premier paquet les 5 premières ms, le deuxième les 5ms suivantes, etc).
+			
+			\dessinS{83}{.8}
+			
+			Cela permet de ne pas ajouter de redondance et une perte est difficile à remarquer, mais il y a un délai supplémentaire du au temps qu'il faut pour récupérer les paquets.
+			
+			
+		% 16 - 11 - 2011
+			
+		\section{CDN - Content distribution networks}
+		
+		Une situation possible est qu'on stream un fichier à partir d'un serveur unique en temps réel.
+			
+		\dessin{84}
+			
+		La méthode consiste en la réplication d'un contenu sur des serveurs différents à travers l'Internet. Ainsi, on ne stream plus à partir du fichier original, mais à partir d'une copie d'un serveur plus proche.
+			
+		Le serveur d'origine est vu comme un client pour le réseau. A chaque nouveau fichier à streamer, il va l'envoyer au CDN, qui va le placer à des emplacements qui permettent aux utilisateurs d'éviter les désagréments (perte, délai) dus à l'envoi de contenu sur de longues distances. A chaque mise à jour d'un fichier, le CDN mettra à jour ses copies.
+			
+			Exemple d'un streaming avec un CDN.
+			
+			\dessinS{85}{.8}
+			
+			\begin{enumerate}
+				\item La réponse du serveur HTTP sera modifiée de manière à rediriger vers un serveur CDN.
+				\item La résolution DNS est l'étape où	on doit choisir le serveur le plus proche (grâce à une technique de mapping) et retourner son adresse IP. 
+			\end{enumerate}
+			
+			Ainsi, le serveur d'origine ne fait plus que distribuer du HTML, et modifier les liens de streaming. Le CDN lui va distribuer les streaming, en utilisant son serveur DNS pour rediriger les requêtes vers un serveur CDN le plus proche.
+			
+			Les avantages de la méthode sont la facilité de déploiement et le fait que cela reste totalement transparent.
+			
+			Il est relativement facile de mapper un range d'adresses IP si on connaît les ranges d'IP des ISP. Ainsi, on peut approximer l'emplacement géographique d'un utilisateur. On n'aura pas d'informations intéressantes si l'ISP est situé au niveau mondial.
+			
+			Cette détection n'est généralement pas assez. En plus de cela, les CDN monitorent les RTT entre leurs serveurs et des IP adresses. On associe ces IP à des adresses. On se base ainsi sur un délai pour localiser, et non sur des distances physiques.
+			
+			Cependant, pinger de nombreuses IP avec beaucoup de serveurs ne donnera pas des résultats de manière efficace, des techniques doivent être mises en place. Par exemple générer une matrice de RTT entre des noeuds, pinger un petit sous-ensemble des noeuds choisis de manière aléatoire et inférer les mesures non effectuées. Grâce à la corrélation entre des noeuds (même localisation, même bottleneck), le système fonctionne, même avec une matrice relativement petite.
+			
+			C'est au CDN de choisir la technique qu'il veut, ce n'est pas standardisé.
+		

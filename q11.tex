@@ -1,0 +1,108 @@
+\chapter{Politiques de décongestion des routeurs : RED - WRED - RIO}
+
+\dessin{109}
+		
+		Les paquets marqués seront donc jetés en premiers, ils sont considérés comme non prioritaires. En les faisant entrer dans le réseau, on ne peut pas prédire ce qu'il va se passer.
+		
+		Des policers dans le réseau même peuvent aussi marquer des paquets, et peuvent avoir des marqueurs différents des marqueurs de la source. La source peut aussi mentir et mal marquer les paquets.
+		
+		Avantages d'une priorité dans le dropping
+		
+		\begin{itemize}
+			\item si le réseau a une capacité éparpillée, tout le trafic est géré.
+			\item lors de congestion, la charge est automatiquement diminuée.
+		\end{itemize}
+		
+		Désavantage : la séparation des priorité au sein d'un même flux est compliqué pour une source, de plus rien n'empêche de marquer tous les paquets comme prioritaires. Une police doit être mise en place pour définir le marquage.
+		
+		Cas particulier d'ATM : perdre une cell fait perdre tout le paquet qui est formé par elle, donc on peut jeter toutes les cells du paquet, car elles ne serviront à rien (on ne saura jamais reconstituer tout le paquet).
+		
+		Une stratégie idéaliste serait de jeter les paquets d'hôtes à proximité en premier, car ils n'ont pas trop utilisé de ressources dans le réseau. On ne peut cependant pas le faire pour Internet à cause du TTL qui diminue, ce qui fait que la valeur initiale n'est pas connue.
+		
+			\section{Early drop}
+			
+			L'idée est de jeter des paquets même s'il reste de l'espace libre. Cela permet de signaler aux sources qu'il y a un début de congestion et qu'il faut ralentir les débits ; les connexions TCP vont diminuer le débit, ce qui permettra (peut être) d'éviter la congestion. Ainsi, les sources coopératives auront des délais plus courts, tandis que les sources non coopératives subiront de sévères pertes de paquets.
+						
+			Lorsque le buffer a atteint une certaine capacité, les paquets sont dropés avec une certaine probabilité.
+			
+			\dessin{110}
+			
+			Problème : on pourrait avoir des fluctuations importantes qui passent sur le seuil, il faudrait une stratégie plus progressive. De plus, on se base sur la taille courante (instantanée) du buffer.
+			
+			\section{RED - Random Early Detection}
+		
+			\dessin{111}
+			
+			On utilise la taille de la file \textbf{moyenne}. Par exemple, si on envoie un burst, si on se base sur la taille instantanée, il y aura une grosse variation et un drop est possible. Si on utilise la moyenne, la variation ne sera pas grande. Seule une source qui envoie beaucoup de données (gros burst) constamment sera pénalisée ; TCP ne sera pas touché car généralement il envoie des petits bursts.
+			
+			Le seuil maximal est plus petit que la capacité, ce qui est logique car si on se situe près de la capacité, cela signifie que la moyenne est très grande (fluctuations élevées), donc très proche de la congestion.
+			
+			La moyenne a donc une borne ($max_{th}$), mais la taille instantanée peut la dépasser.
+			
+			RED augmente les performances d'un réseau composé de sources TCP :
+			
+			\begin{itemize}
+				\item les pertes surviennent aléatoirement (et pas par burst comme avec un jet de type drop-tail), du coup TCP reste en mode congestion avoidance (alors que des pertes par burst fait rentrer TCP en slow start). De plus, il y a moins de synchronisation entre les sources TCP, elles ne ralentissent pas toutes en même temps
+				
+				\item les pertes surviennent avant que la congestion ne soit réellement présente, du coup TCP anticipe plus
+				\item les files des buffers sont gardées petites, il y a moins de queuing delay, un plus petit RTT, et donc un meilleur débit du côté de TCP.
+			\end{itemize}
+			
+			Si on ne perd qu'un seul paquet dans un burst, c'est bon pour TCP car si on perdait tout le burst, le seul moyen de retransmettre est d'attendre la fin du timer (les ACK ne viendront jamais), ce qui implique que le throughput sera mis à 1.
+			
+			De plus, si on perdait systématiquement les paquets après une certaine capacité sur un buffer, toutes les connexions TCP qui l'utilisent vont diminuer (car congestion), puis remonter, puis redescendre lorsque la capacité maximale est utilisée, etc. Cette synchronisation est néfaste, RED va la casser.
+			
+			Grâce à RED, la capacité moyenne est petite (comprise entre les seuils min et max), ce qui diminue le queuing delay, donc des RTT plus petits, et donc un débit TCP plus grand (car le débit est proportionnel à son inverse : $\frac{MSS}{RTT \sqrt{p}}$).
+			
+			Cependant, RED est difficile à paramétrer, et des pertes de paquets sont parfois inutiles (cela réduit le débit de TCP pour rien), notamment dans les cas où il n'y a pas de congestion.
+			
+			
+			\subsection{ECN - Early Congestion Notification}
+			
+			C'est une variante de RED ; on ne va pas jeter les paquets, mais les marquer. Ainsi, le destinataire des paquets saura qu'il y a de la congestion, et va prévenir la source via les ACK (car IP est connectionless), qui indiqueront le niveau de congestion en plus de signaler jusqu'à quel byte on a reçu les données.
+			
+			\section{WRED - Weighted RED}
+			
+			On est plus agressif sur les paquets marqués que sur les autres. On peut ainsi définir $n$ niveaux de drop, $n$ couleurs différentes avec des seuils particuliers.
+			
+			\dessin{112}
+			
+			Les paquets admis ne sont pas nécessairement protégés des paquets marqués : le fait d'avoir ajouté le trafic des paquets marqués pousse la courbe de probabilité.
+			
+			Solution : décalage des paramètres.
+			
+			\dessin{113}
+			
+			Un trafic au niveau $n$ est protégé des trafics de niveau supérieur si les charges du trafic des niveaux supérieurs n'a que des effets mineurs sur le taux de perte au niveau $n$.
+			
+			WRED offre une telle protection si $max_{th}(n + 1) \leq min_{th}(n) \quad \forall n$
+			
+			Un trafic de paquets rouges pénalise moins le trafic des paquets verts, mais contribue toujours à augmenter la moyenne de la taille du buffer. Sans trafic rouge, un trafic vert commence à être perdu à partir de $min_{th}(1)$. Avec un trafic rouge élevé, le trafic vert commencera plus vite à être perdu. On n'a donc pas d'isolation parfaite entre les deux.
+			
+			\section{RIO - RED with In and Out}
+			
+			On définit deux courbes de probabilité, mais avec des axes $X$ différents. Le trafic vert est In car "in profil", le rouge est Out. Chacun de ces trafics sera assigné à une des courbes.
+			\dessin{114}
+			
+			Le système est amélioré avec ces deux courbes avec des bons paramètres : il faut que $max_{th}(Out) < min_{th}(In)$. 
+			
+			\dessin{115}
+			
+			Avec les mêmes paramètres, RIO est mieux que WRED avec deux niveaux dans la protection des paquets In des paquets Out (car ...).
+			
+			Avec RIO, le taux de drop des paquets In ne dépend pas des paquets Out dans le système, excepté dans des circonstances exceptionnelles (overflow du buffer). Donc RIO fournit une protection du trafic (traffic sheltering).
+			
+			Si $max_{th}(Out) \leq min_{th}(In)$, alors les paquets In peuvent être jetés si tous les paquets Out sont déjà tous jetés.
+			
+			Un cas particulier pourrait être :
+			
+			\begin{itemize}
+				\item une file de type drop tail (courbe en step) pour les paquets In, et
+				\item une file RED pour les paquets Out.
+			\end{itemize}
+			
+			
+			Avec des trafics élevés, WRED et RIO peuvent diminuer le trafic a des hauts taux de jet.			
+			
+			On a une certaine flexibilité, par exemple on pourrait implémenter un mécanisme qui marque les paquets verts et qui drop les paquets rouges.
+			

@@ -1,0 +1,95 @@
+\chapter{Mécanismes de mise en forme du trafic et de policing}
+
+	\section{Mécanismes de shaping}
+On modèle le trafic, on s'arrange pour qu'il ne dépasse pas certaines quantités :
+		
+		\begin{itemize}
+			\item Average rate : combien de paquets sont envoyés par unité de temps (à long terme). Il faut savoir de quel intervalle de temps on parle (car les moyennes de 100 paquets/s et de 6000 paquets/min sont les mêmes); 
+			\item Peak rate ;
+			\item La taille de burst maximale, c'est-à-dire le nombre de paquets envoyés consécutivement à un peak rate.
+		\end{itemize}
+		
+		Le trafic qui sort d'une file subit ce modelage.
+		
+		
+		\begin{itemize}
+			\item Average rate : on ne dit pas comment on distribue les paquets. Par exemple, on pourrait envoyer les 6000 paquets dans les 10 premières secondes, et ne rien envoyer pendant 50 secondes. Cela ne suffit pas à shaper le trafic. On considère une fenêtre temporelle relativement grande.
+			\item Peak rate : idem que l'average rate, mais on considère une fenêtre temporelle beaucoup plus petite.
+
+			\item Maximum Burst size
+		\end{itemize}				
+		
+			\subsection{Leaky Bucket shape}
+			
+			On utilise le modèle d'un seau troué.
+			
+			\dessin{102}
+			
+			\dessin{103}
+		
+			Il faut cependant prendre en compte que
+			
+			
+			
+			
+			\begin{itemize}
+				\item les flux de paquets ne sont pas des fluides
+				\item chaque paquet est transmis à la vitesse du lien de sortie, donc à des très petites périodes de temps le débit de sortie vaut tout le temps la vitesse de sortie du lien
+				\item les paquets ont une taille variable
+				\item seul le peak rate est régulé, on aimerait bien limiter le burst size et l'average rate
+			\end{itemize}
+			
+			Pour régler ces problèmes, on utilise le mécanisme du token bucket.
+			
+			\subsection{Token Bucket}
+			
+			On dispose d'un seau de tokens qui se remplit à une vitesse $\rho$ constante. Le plus grand nombre de token qu'il peut compter est $\sigma$, après quoi les nouveaux tokens sont jetés. Le seau est initialement plein ($\sigma$ tokens).
+			
+			\dessin{104}
+			
+			Chaque token permet la transmission d'un certain nombre de bytes (par exemple 1 byte). Les paquets sont ainsi retardés dans un buffer d'attente, et ce tant qu'il n'y a pas assez de tokens dans le bucket pour les envoyer.
+		
+			
+			Au début de l'exécution, on va envoyer les paquets à la vitesse du lien, tant que le token bucket n'est pas vide. Ensuite, on ne peut plus envoyer qu'à une vitesse similaire à la vitesse d'arrivée des tokens ($\rho$).
+			
+			Soit $P$ la capacité en bytes/sec du lien, avec $P > \rho$. Si la capacité est plus petite que le débit d'arrivée des tokens, ces derniers n'ont plus d'intérêt.
+			
+			\dessin{105}
+			
+			On a 
+			
+			\begin{itemize}
+				\item MBS le maximum burst size : $MBS = \sigma \frac{P}{P - \rho} > \sigma$
+				\item $\tau$ la durée maximale de burst : $\tau = \frac{MBS}{P} = \frac{\sigma}{P - \rho}$
+			\end{itemize}
+			
+			On a $\sigma < MBS$, car des tokens s'ajoutent pendant qu'on les utilise dans le MBS.
+			
+			% 30 - 11 - 11
+			
+			Pour réguler le peak rate, on ajoute un second régulateur, avec des paramètres $(\rho_2, \sigma_2)$. $\rho_2$ sera le peak rate, $\sigma_2$ ne peut pas être nulle sinon un paquet de taille maximale $M$ risque de rester indéfiniment dans le buffer. Il faut donc que $\sigma_2$ soit égal à $M$.
+			
+			$\rho t$ permet donc de réguler le peak rate.			
+		
+			\dessin{106}
+			
+		\section{Mécanismes de policing}
+		
+		On vérifie que le trafic a bien été shapé. Un policer choisira si un paquet peut entrer dans le réseau, sinon il le jette.
+		
+		Le policer n'a pas pour but de changer la forme du trafic, il ne fait que vérifier si le "contrat" entre la source et le destinataire est respecté. Cette vérification s'effectue généralement à l'entrée (ingress point) d'un réseau.
+		
+		\dessin{107}
+		
+		Quand un paquet est jeté, aucun token n'est utilisé, vu qu'il n'est pas envoyé sur le réseau (et donc aucune ressource n'est utilisée).
+				
+		On peut s'arranger pour que les paquets à jeter soient quand même envoyés dans le réseau, même s'ils ne satisfont pas le contrat. Cependant, si des paquets doivent être jetés dans le réseau, ce seront les premiers éliminés. Pour les différencier des paquets qui ont respecté le contrat, ils sont marqués.
+		
+		Le token bucket n'est pas modifié, on ne consomme pas de tokens. Si on le fessait, cela réduirait l'enveloppe pour les paquets admis à entrer dans le réseau.
+		
+		Si on a plusieurs critères, comme pour le shaping, il faut mettre en cascade plusieurs token buckets pour le policing : le premier servira à jeter les paquets qui excèdent le peak rate, le second ceux qui excèdent l'average rate et le maximum burst size.
+		
+		On niveau des marquages, on peut par exemple marquer les paquets en vert s'ils respectent l'enveloppe, en orange s'ils ne dépasse pas trop le maximum burst size, en rouge sinon.
+		
+		\dessin{108}
+		

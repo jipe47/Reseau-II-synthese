@@ -1,0 +1,238 @@
+\chapter{Réseaux sans fil : caractéristiques - CDMA - réseaux WiFi (802.11)}
+
+	\section{Introduction}
+Les technologies sans-fil sont partagées et se retrouvent aux extrémités des réseaux. Il y a deux grands challenges : l'aspect sans-fil et la mobilité, c'est-à-dire la gestion d'un utilisateur mobile qui peut changer de point d'attache à un réseau.
+	
+	On distingue plusieurs types d'éléments dans un réseau sans-fil :
+	
+	\begin{itemize}
+		\item Les hôtes sans-fils, des ordinateurs portables, des PDA, des smartphones, etc qui peuvent être stationnaires ou mobiles. La capacité d'être sans-fil n'implique pas nécessairement la mobilité.
+		
+		\item les points d'accès (base station), généralement reliés à un réseau câblé. Il s'agit d'un relais pour envoyer des paquets entre ce réseau et les hôtes sans-fil dans leur champ d'action.
+		
+		\item le lien sans-fil, avec un protocole à accès multiple. Les débits varient selon la distance de transmission. Ce lien connecte les hôtes sans-fil à une base station, mais aussi des éléments de l'infrastructure réseau entre eux. Un lien sans-fil est caractérisé par sa couverture et son débit.
+	\end{itemize}
+	
+	
+	Le fait de se trouver à portée de deux points d'accès est avantageux, car :
+	
+	\begin{itemize}
+		\item la forme du signal est rarement uniforme, notamment à cause des éventuels obstacles ;
+		\item si un spot est saturé, on peut toujours essayer sur un autre ;
+		\item lorsqu'on entre dans le rayon d'un spot, la connexion avec celui-ci n'est pas instantanée. Le fait d'avoir des rayons qui se superposent permet de ne pas perdre de connectivité.
+	\end{itemize}
+	
+	Il existe de nombreux standards de lien sans-fil.
+	
+	\dessin{27}
+	
+	La norme 802.15 correspond au Bluetooth
+	
+	La norme 802.11a,g est utilisée en intérieur mais également à l'extérieur, avec une radiation en cône (alors qu'en intérieur, c'est une radiation omnidirectionnelle, où l'énergie utilisée décroît quadratiquement par rapport au rayon).
+	
+		
+	Il existe deux modes de connexion à un réseau :
+	
+	\begin{itemize}
+		\item le mode infrastructure : les points d'accès connectent les terminaux à un réseau câblé. Le terme handoff/handover réfère à la mobilité d'un de ces terminaux entre plusieurs base stations.
+		
+		\item le mode ad hoc : il n'y a pas de base stations, les périphériques jouent le rôle de routeurs ; quand ils sont à proximité les uns des autres, ils peuvent communiquer. Si deux périphériques sont éloignés, ils peuvent passer par des périphériques intermédiaires pour communiquer (MANET : mobile adhoc network).
+	L'avantage est qu'il n'est pas nécessaire d'avoir une infrastructure pour supporter le réseau.
+	\end{itemize}
+		
+	\dessin{28}
+		
+		
+	Grandes différences entre un réseau sans-fil et un réseau câblé :
+	
+	\begin{itemize}
+		\item la force du signal décroît de manière quadratique en fonction de la distance, alors que l'atténuation d'un câble est linéaire ;
+		\item il y a des interférences avec d'autres sources ; certaines fréquences standardisées sont partagées avec d'autres périphériques (par exemple les téléphones) ;
+		\item la propagation du signal fait qu'il peut se refléter et arriver décalé en un point. Un signal interfère avec lui-même en plus d'interférer avec d'autres objets.
+	\end{itemize}
+	
+	Ce sont ces caractéristiques qui rendent une communication plus compliquée.
+	
+	\dessin{29}
+	
+	Un rapport signal/bruit grand signifie qu'il est facile d'extraire un signal du bruit ; idéalement, il faut qu'il soit le plus grand possible, mais cela implique une plus grande puissance de transmission. Pour une couche physique donnée, plus on augmente la puissance (le signal), plus le rapport signal/bruit augmente et plus le BER (bit error rate, taux d'erreur) diminue.
+	
+	Par contre, étant donné un rapport signal/bruit, il faut choisir une couche physique que respecte certains pré-requis en terme de BER, tout en ayant la plus grande bande passante. De plus, le rapport signal/bruit peut varier avec la mobilité, la couche physique doit s'adapter dynamiquement.
+	
+	Une solution est de passer d'un protocole à l'autre afin d'avoir un taux d'erreur faible (passer du rouge au bleu par exemple), mais en baissant le débit.
+	
+		\subsection{Problème d'un terminal caché}
+		
+		\dessin{30}
+	
+		Avec un réseau câblé, tous les hôtes sont accessibles (partage d'un bus par exemple) et peuvent s'entendre. Avec un réseau sans-fil, ce n'est pas le cas, c'est le problème du terminal caché : un terminal peut ne pas être accessible et accéder à certains terminaux d'un réseau, à cause de l'atténuation du signal.
+	
+		Cela s'ajoute au problème de collision ; le CSMA n'est pas utilisable, car si A et B communiquent, C ne le saura pas et communiquera à B quand même. A cause de ce problème de terminal caché, la détection de collision est beaucoup plus difficile.
+		
+		
+		\subsection{CDMA - Code division multiple access}
+		
+		On avait déjà TDM (time division multiplexing) et FDM (frequency division multiplexing). Avec CDM, tout le monde parle en même temps à la même fréquence, mais on peut filtrer tout le bruit pour isoler une personne en particulier.
+		
+		Un pattern est assigné à chaque interlocuteur, et chaque fois qu'il y a une trame à envoyer, les bits sont multipliés par ce pattern. 0 est encodé en -1, 1 reste 1. Le produit est envoyé, et peut être décodé avec le pattern par un produit scalaire.
+		
+		\dessinS{31}{.95}
+		
+		Cela permet ainsi la coexistence de plusieurs utilisateurs sur la même gamme de fréquences, qui transmettent simultanément avec un minimum d'interférences.
+		
+		Les codes doivent être soigneusement choisis ; il ne faut pas que deux senders aient le même code. De plus, les codes doivent être orthogonaux, afin que leur produit scalaire soit nul. Cependant, le nombre de vecteurs de bits orthogonaux est égal à la dimension (8 bits donne 8 vecteurs orthogonaux). Pour accepter plus de personnes, il faut augmenter la dimension.
+		
+		Les signaux s'additionnent quand ils sont envoyés et qu'ils interfèrent entre eux. Pour décoder, il suffit de projeter un vecteur sur une direction. Si les vecteurs n'étaient par orthogonaux, on ne pourrait pas le faire.
+		
+		\dessinS{32}{1}
+		
+		\dessinS{33}{.5}
+		
+	\section{Réseaux locaux sans-fil et IEEE 802.11}
+	
+		\subsection{Normes sans-fil}
+		Il existe plusieurs normes pour le 802.11 :
+	
+		\begin{itemize}
+			\item 802.11b : utilisation d'un spectre de fréquences publiques (2.4-2.5GHz), jusqu'à 11Mbps, DSSS (direct sequence spread spectrum) dans la couche physique
+			\item 802.11a :  5-6GHz, jusqu'à 54Mbps
+			\item 802.11g : 2.4-2.5GHz, jusqu'à 54MBps
+			\item 802.11n : 2.4-2.5GHz, jusqu'à 200Mbps, avec plusieurs antennes et MIMO
+		\end{itemize}
+	
+		Tout ces protocoles utilisent CSMA/CA pour les accès multiples, et tous possèdent une version avec base-station et une version ad-hoc.
+		
+		\subsection{Architecture LAN}
+		
+		Une base station est nommé point d'accès ; c'est un élément opérant à la couche 2.
+		
+		Un BSS (Basic Service Set), ou "cellule" est une infrastructure qui contient des hôtes sans fil et un point d'accès (si on est en mode ad hoc, il n'y a que des hôtes).
+	
+		\dessin{34}
+	
+		Pour une norme, la bande de fréquences est divisée en plusieurs canaux qui se chevauchent. Cela fait perdre de la bande passante (théorème de Shannon), mais cela permet de choisir des sous-canaux afin de ne pas subir des interférences venant de périphériques environnants. Ainsi, avant d'installer un point d'accès, il faut scanner l'environnement pour déterminer les sous-canaux. De plus, cela permet, si des points d'accès sont proches, d'éviter des interférences en opérant sur des sous-canaux distincts.
+		
+		Un hôte doit s'associer à un point d'accès; les points d'accès envoient des trames qui signalent leur présence (beacon frame), qui contiennent leurs SSID (nom) et adresse MAC. 
+		
+		Un hôte scanne et écoute ainsi les sous-canaux, à la recherche de ces trames. Ensuite il sélectionne un point d'accès, s'authentifie si nécessaire, et va utiliser DHCP pour récupérer une adresse IP sur le réseau du point d'accès.
+	
+	
+		\dessinS{35}{.8}
+		Il y a deux types de scan de beacons :
+	
+		\begin{itemize}
+			\item le scan passif :
+			
+			\begin{enumerate}
+				\item les beacon frames sont envoyées depuis les points d'accès ;
+				\item un hôte sélectionne un point d'accès et envoie une frame de requête (Association Request frame) ;
+				\item le point d'accès renvoie une réponse (Association Response frame).
+			\end{enumerate}
+			
+			\item le scan actif :
+			
+			\begin{enumerate}
+				\item l'hôte envoie des trames de requête en broadcast (Probe Request frame) ;
+				\item des réponses sont envoyées par les points d'accès ;
+				\item l'hôte sélectionne un point d'accès et envoie une frame de requête (Association Request frame) ;
+				\item le point d'accès répond à l'hôte (Association Response frame).
+			\end{enumerate}
+		\end{itemize}		
+	
+		 Le scan actif est plus rapide, et est nécessaire pour les silent access points, des points d'accès qui n'envoient pas de beacon, pour plus de sécurité. Le mode passif est quand même utile, pour économiser de l'énergie par exemple.
+		 
+		\subsection{CSMA/CA}
+		
+		CSMA est utilisable, mais pas pour détecter et éviter les collisions. CSMA/CD n'est pas suffisant non plus, car on pourrait ne pas entendre des hôtes qui sont éloignés (signal trop faible).
+		
+		On définit donc le CSMA/CA (pour collision avoidance), qui va permettre d'éviter des collisions. 
+		
+		On définit un DIFS comme un slot durant lequel on écoute le canal. On a le fonctionnement suivant :
+		
+		\begin{itemize}
+			\item pour l'expéditeur :
+			
+			\begin{enumerate}
+				\item si le canal n'est pas occupé pendant un DIFS, alors on transmet toute la frame (pas de détection de collision)
+				\item si le canal est occupé, on attend pendant un temps choisi aléatoirement, et qui décroît quand le canal est libre.
+				
+				On transmet quand le temps expire. S'il n'y a pas d'ACK, on augmente l'intervalle de temps choisi aléatoirement et on recommence.
+			\end{enumerate}
+			
+			\item pour le récepteur : si la frame est bonne, on envoie un ACK après un SIFS ; cet ACK est nécessaire à cause du problème de terminal caché).
+			
+		\end{itemize}
+		
+		\dessin{36}
+				
+		La principale différence est l'ACK envoyé par le récepteur, pour assurer qu'il n'y a pas eu de collision. Lorsqu'on le reçoit, on sait qu'il n'y a pas eu de collision ni d'erreur binaire. Généralement le délai est court comparé aux récupérations d'erreur des couches supérieures (TCP).
+		
+		De plus, il n'y a jamais qu'une entité qui communique à la fois ; le canal est half-duplex. Cela donne un protocole robuste, même si le mécanisme est simple.
+		
+		Pour Ethernet, quand on commence à transmettre, il peut y avoir une collision (à cause du temps de propagation) uniquement au début, mais vu que tout le monde écoute, il n'y en aura pas après 2 $\times$ le temps de propagation. Du coup, il vaut mieux travailler avec des trames relativement grandes.
+		
+		Dans le scénario actuel, on peut ne pas entendre le transfert, quelqu'un pourrait donc commencer à transmettre alors que le canal est occupé. Le risque de collision est donc tout le temps présent, et plus la trame à transmettre sera grande, plus il y a de chance d'avoir une collision. Du coup, il vaut mieux que les trames ne soient pas trop grandes.
+		
+		De plus, les erreurs binaires sont plus fréquentes ; les probabilités sont petites pour des petits paquets, mais sont proportionnelles à la taille du paquet. Du coup, s'il y en a une dans une grosse trame, il faudra la renvoyer entièrement.
+		
+		Pour Ethernet, il y a une réservation de ressources implicite avec le double du temps de propagation. Ici, l'idée serait de faire une réservation explicite. 
+		
+		\dessin{37}
+		
+		Le transmetteur va envoyer une requête d'envoi (RTS, request-to-send) avec un petit paquet. Les confirmations (CTS) sont envoyées par le point d'accès en broadcast, afin que tous les hôtes sachent qu'il y a eu réservation. Même les hôtes qui sont éloignés le sauront, sinon ils ne seraient pas connectés au point d'accès, donc il ne saurait pas y avoir de collision.
+		
+		Le CTS contient la taille des données à envoyer (communiquées dans le RTS à la base). Du coup, si un hôte ne reçoit pas l'ACK (comme B), il pourrait calculer le temps qu'il devra attendre en se basant sur cette taille.
+		
+		\subsection{Adressage}
+		
+		\dessin{41}
+		
+		Une trame contient 4 adresses, soit deux adresses supplémentaires aux adresses MAC source et de destination :
+		
+		\begin{itemize}
+			\item Adresse 1 : l'adresse MAC de l'hôte sans-fil ou du point d'accès, au cas où il y aurait plusieurs points d'accès à portée de l'hôte ; on n'enverra la trame qu'à un seul point d'accès. 
+						
+			 L'adresse du routeur est utilisée par le point d'accès au cas où il serait relié à plusieurs routeurs.
+			\item Adresse 2 : l'adresse MAC source, de l'hôte ou du point d'accès qui transmet la trame ;
+			\item Adresse 3 : l'adresse MAC de destination, celle de l'interface du routeur auquel le point d'accès est attaché
+			\item Adresse 4 : utilisée pour le mode ad hoc.
+		\end{itemize}
+		
+		
+		Envoi d'une trame par l'hôte :
+		
+		\dessin{39}
+		
+		Réception d'une trame par l'hôte :
+		
+		\dessin{40}
+		
+		C'est différent d'Ethernet dans le sens où le point d'accès n'est pas transparent pour les hôtes sans-fil, contrairement à un switch Ethernet. Par contre, il est transparent pour les routeurs, il est considéré comme un bridge de niveau 2, au même titre qu'un switch.
+		
+		Au sein d'un même subnet, on peut avoir un problème lorsqu'il y a de la mobilité.
+		
+		\dessinS{42}{.7}
+				
+		En changeant de point d'accès, l'hôte va conserver la même adresse IP (vu qu'il est dans le même subnet). Le problème est qu'en passant d'un à l'autre, le switch doit savoir vers lequel se diriger.
+		
+		La solution est le self-learning : le switch va voir les frames de l'hôte, et se "rappellera" du port qu'il utilise.
+		
+			\subsubsection{Fonctionnalités avancées}
+		
+			\paragraph{Adaptation du débit}
+			En se déplaçant, le taux de transmission varie, de même que le rapport signal/bruit (SNR). Plus on s'éloigne d'un point d'accès, plus le SNR diminue et plus le BER augmente. Quand il est trop grand, la solution est de passer à un début plus faible, mais avec un BER plus petit.
+		
+			\dessinS{29}{.7}
+		
+			\paragraph{Power management}
+		
+			Un noeud peut signifier à un point d'accès qu'il se met en veille. Ainsi, ce dernier sait qu'il ne faut pas transmettre de frames à cet hôte particulier. Cet hôte se réveillera avant la prochaine beacon frame.
+		
+			Une beacon frame contient la liste des périphériques mobiles pour lesquels il y a des frames en attente de transmission. Ainsi, un noeud se réveillera s'il y a des frames pour lui, sinon il se remet en veille jusqu'à la prochaine beacon frame.
+		
+			Cela permet d'économiser de l'énergie ; un mobile peut être en veille durant 99\% du temps.
+		
+		% 19 - 10 - 11
+				
+		Cela permet d'avoir des ranges jusqu'à 10km, avec un débit d'environ 14Mbps.
+	

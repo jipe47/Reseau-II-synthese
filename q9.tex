@@ -1,0 +1,224 @@
+\chapter{Algorithmes d'ordonnancement : équité Max-Min - GPS - (Weighted) Round Robin - (Weighted) Fair Queuing}
+
+Le scheduling (ordonnancement) détermine quel est le prochain paquet à envoyer sur un lien.
+		
+			\section{FIFO - FCFS}
+			
+			FCFS pour First Come First Served ; on envoie les paquets dans l'ordre d'arrivée dans la file. Si elle est remplie, on a plusieurs polices de jet de paquets :
+			
+			\begin{itemize}
+				\item tail drop : on supprime les paquets arrivant
+				\item priority drop : on jette les paquets sur base d'une priorité
+				\item random : on jette les paquets aléatoirement
+			\end{itemize}
+			
+			\section{Scheduling avec priorité}
+			
+			Cela consiste à transmettre d'abord les paquets de plus haute priorité dans une file. Chaque classe définit ainsi une priorité, sur base du ToS, de l'IP source/destination, des ports, etc.
+			
+			\dessinS{92}{.8}
+			
+			Un tel système est non préemptif, c'est-à-dire qu'il n'interrompt pas une tâche qui a été commencée.
+			
+			\section{Round Robin}
+
+			On crée des files, une pour chaque classe de paquet. Ensuite, on cycle dessus, en servant l'une après l'autre (pour autant qu'il y ait des paquets à servir).
+
+			\dessin{93}
+		
+			Comme le priority scheduling, ce scheduling est work-conserving car, dès qu'il y a un paquet dans une des files, il est traité. 
+			
+			L'intérêt d'un mécanisme qui n'est pas work-conserving est par exemple de réduire/supprimer le jitter.
+			
+			Loi de la conservation : la somme de la moyenne des délais dans les files ($d_i$) reçus par un ensemble de connexions, avec un poids dépendant du partage de la charge du lien ($\rho_i$) est indépendant de la discipline de scheduling.
+			
+			$d_i$ est le délai moyen des paquets pour une classe. $\rho_i \in [0, 1]$ est la proportion d'un flux par rapport aux autres. Si $c$ est l'utilisation moyenne du lien de sortie, $\frac{c_i}{c} = \rho_i$.
+			
+			%>[dessin 20]<
+		
+			Le scheduler est toujours actif, il ne s'arrête jamais (sauf si les files sont vides). On a donc que $\sum \rho_i \leq 1$ ($= 1$ : toujours occupé, $< 1$ : files parfois vides).
+		
+			Si on veut mettre une priorité à un flux $j$, il faudra diminuer $d_j$. Vu que la somme des $d_i \rho_i$ est constante, et que les $\rho_i$ sont aussi constantes, alors les $d_i$ ($i \neq j$) augmenteront. Toute mise en priorité se fait au détriment des autres classes, quand on est en présence de ressources limitées.
+		
+			La somme pondérée est un délai que l'on ramène à $d \times (\sum_i \rho_i)$ (la somme est toujours constante) avec $d$ un délai qui caractérise tout le système, c'est le délai moyen d'un paquet, toutes classes confondues.
+		
+		% 23 - 11 - 11
+		
+			\section{Scheduling avec équité max-min}
+			
+			\subsection{Principe}
+			Une discipline de scheduling alloue une ressource. Cette allocation est équitable si elle satisfait l'équité max-min.
+			
+			C'est une attribution récursive d'un ensemble de ressources ; chaque connexion n'a pas plus que ce qu'elle veut. Les petites demandes sont satisfaites, tandis que les grosses demandes peuvent ne pas l'être. Les excès, s'il y en a, sont partagés équitablement parmi les autres connexions.
+			
+			\dessin{94}
+			
+			En bleu, la demande de bande passante qui a été satisfaite.
+						
+			Un utilisateur ne peut pas tricher, dans le sens où il demande plus de bande passante pour être sûr d'avoir une bande passante minimale. L'effet inverse se produira.
+			
+			L'algorithme de Water Filling permet de calculer cette équité ; on utilise le même principe, mais en prenant en compte tous les flux. Quand la capacité d'un lien est atteinte, on freeze les valeurs, et on continue sur les autres.
+			
+			Il s'agit d'un algorithme centralisé qui nécessite la connaissance globale de tous les flux, de leurs chemins, et de toute la topologie. 
+			
+			Les algorithmes décentralisés pour résoudre le problème sont plus compliqués ; ATM ABR (available bit rate) en est un : un paquet est envoyé à travers les noeuds, et revient avec le fair share du flux (en ayant récupéré l'état des noeuds).
+			
+			\subsection{GPS}
+			
+			On peut simuler ce mécanisme avec GPS (Generalized Processor Sharing) : on va visiter chaque file non vide, et on va servir une quantité infinitésimale de chacune.
+			
+			\dessin{95}
+			
+			On implémente bien l'équité max-min. Si tous les flux ont une demande, la même capacité sera allouée à tous les flux. Si un flux se termine ou est satisfait, les autres recevront la même quantité.
+			
+			En théorie, l'algorithme est parfait, mais en pratique on ne peut pas couper des paquets en des quantités infinitésimales, du coup à un instant donné (sur une très petite échelle de temps) on a que 100\% de la bande passante sera assignée à un flux. Si on utilisait un modèle à base de fluides, où le trafic en serait un, on aurait des quantités infinitésimales.
+			
+			On va alors émuler l'algorithme, calculer le temps auquel un paquet doit être envoyé, et placer une borne sur le degré de non-équité.			
+		
+			\section{Weighted Round Robin}
+			
+			On reprend Round Robin, mais en assignant différents poids aux flux, pour compenser des tailles de paquets différentes, mais aussi pour donner plus de services à d'autres flux. Chaque flux aura un poids $w_i$.
+			
+			L'algorithme fonctionne bien avec des paquets de taille égale (ex: ATM, qui en plus a des petits paquets). Avec IP, on a des paquets plus gros que d'autres, on ne peut donc pas se fier à un découpage en paquets. Un découpage en bit/byte serait idéal, mais on ne peut pas le faire.
+			
+			On va alors assigner des poids aux flux (cela revient à modifier la surface des récipients, dans l'algorithme du water filling). On a un weighted Max-min implémenté par un weighted GPS.
+			
+			%[dessin 15]			
+			
+			Si on a des poids différents et une taille de paquet fixe, à chaque visite d'un flux, on servira plus d'un paquet (le nombre est obtenu en normalisant les poids pour les rendre entiers).
+			
+			Si on a des poids différents et des tailles de paquets variables, il faut normaliser les poids par la taille moyenne d'un paquet.
+			
+			
+			Problèmes :
+			
+			\begin{itemize}
+				\item En pratique, le nombre de paquets calculé peut être très grand. Il faut tout un round (le temps de servir tous les flux) pour que le système soit équitable. Si le round est très long, sur des sous-intervalles, on a des flux qui seront privilégiés. On n'est pas équitable sur des petites échelles de temps.
+				\item Il faut déterminer la taille moyenne d'un paquet. Un flux lui-même ne saurait pas prédire cette taille.
+			\end{itemize}
+						
+			\section{WFQ - Weighted Fair Queuing}
+			
+			\subsection{Principe}
+			Pour chaque paquet, WFQ va le marquer avec un timing, qui est calculé par une émulation de GPS. Ce timing est le moment auquel le paquet doit être déservi si on utilisait GPS, soit le moment où on a poussé le dernier bit du paquet sur la ligne. Ensuite, le paquet est placé dans une file.
+			
+			C'est ensuite au tour du scheduler de s'arranger pour coller le plus à la réalité. Un moyen de servir les paquets est de les servir par ordre croissant.
+
+			%[dessin 16]
+			
+			Problème : si on reçoit des paquets au même moment et de même poids, en théorie, ils seront envoyés au même temps $t$, en parallèle. En pratique, on doit en choisir un des deux, du coup cela ne veut pas dire que les paquets seront servis à leur temps GPS.
+			
+			Le défi est de calculer le temps auquel envoyer le paquet.
+			
+			
+			\subsection{FQ - Fair Queuing}
+			Dans un premier temps et sans considérer les poids, on va essayer d'émuler un Round Robin bit par bit. Donc, à chaque round, un bit de chaque paquet d'une file active (c'est-à-dire non vide) est traité. Pour un paquet de $k$ bits, il faudra $k$ rounds pour qu'il soit complètement servi ; ce nombre est appelé \textit{round number} ($R$), on va l'utiliser pour le calcul du timestamp.
+			
+			Pour une file vide, on assignera comme tag le finish number $FN = R + k$.
+			
+			\dessin{96}
+			
+			Si la file n'est pas vide, le finish number sera celui du dernier paquet dans la file auquel on ajoute $k$ ; $FN = f + k$.
+			
+			\dessin{97}
+			
+			Avantages : 
+			
+			\begin{itemize}
+				\item on n'a pas besoin de connaître de faire des spéculations sur ce qu'il va se passer dans le futur. Une fois le tag assigné, il ne change plus.
+				\item quand on assigne un tag, on ne se soucie pas des autres flux
+			\end{itemize}
+			
+			On a toujours un manque d'équité à des très petites échelles de temps : au milieu d'un round, un flux pourrait avoir un bit traité, et pas un autre.
+			
+			On émule GPS, donc une connexion devrait être considérée comme active si la file GPS émulée (pas la file WFQ) n'est pas vide. De ce fait, une file peut être considérée comme active même si elle n'a pas de paquets.
+			
+			Par exemple, pour une file vide et deux connexions, avec des paquets de longueur 1 et un lien de débit égal à 1 bit/src, d'après GPS, on aurait traité 0.5 bit et la file ne serait pas vide, alors qu'avec le WFQ on aurait traité le bit. Il faut donc considérer ce qu'on aurait eu en théorie, avec GPS.
+			
+			Le vrai test est donc de savoir si une file est vide ou non, pour choisir une des deux formules. Si une file contient des éléments, elle sera active si le \textit{finish number} du dernier paquet est plus grand que $R$. Pour une file vide, on conserve le tag du dernier paquet envoyé, qui sera aussi comparé à $R$. Là où un paquet serait envoyé par un routeur, GPS serait encore en train de le servir.
+			
+			On a alors, pour un paquet de longueur $p$,
+			
+			\begin{itemize}
+				\item s'il arrive d'une connexion active $i$, $FN = FN_i \text{ précédent } + p$
+				\item s'il arrive d'une connexion inactive $i$ : $FN = R + p$
+			\end{itemize}
+			
+			En insérant les poids, on a pour un paquet de longueur $p$ :
+			
+			\begin{itemize}
+				\item s'il arrive d'une connexion active $i$, $FN = FN_i \text{ précédent } + \frac{p}{w_i}$
+				\item s'il arrive d'une connexion inactive $o$ : $FN = R + \frac{p}{w_i}$
+			\end{itemize}
+			
+			Pour l'implémentation, on devra savoir si la connexion est active ou non, et pour cela on devra calculer $R$ à chaque arrivée de paquet.
+								
+			
+			\dessin{98}
+						
+			On a ajouté .5 à $R$ car on a servi la moitié de la capacité à chaque flux (?). Le partage de la connexion varie, ce qui fait varier le taux d'incrémentation de $R$, la vitesse est inversement proportionnelle au nombre de connexion.
+			
+			
+			
+			\subsection{Calcul de R}
+			
+			Naïvement, $R$ pourrait être le nombre de rounds de service qui ont été complétés. Le problème vient du fait qu'un serveur peut ne pas avoir servi toutes les connexions en un round, ou que des nouvelles connexions peuvent s'ajouter en plein milieu d'un round. Une incrémentation constante n'est pas pensable.
+			
+			Il faut redéfinir $R$ comme une valeur réelle qui s'incrémente à un rythme inversement proportionnelle au nombre de connexions actives (dans l'émulation GPS).
+			
+			Avec ce changement, WFQ émule GPS au lieu de RR en bit par bit. On a des adaptations de débit instantanées avec le nombre de connexions actives.
+			
+			\dessin{99}
+						
+			Le futur est ainsi prédit en fonction du nombre de round. FN est calculable, pas FT.
+			
+			
+			\subsection{Garantie de bande passante}
+			
+			Une bande passante minimale est garantie, de même que le délai peut être borné.
+			
+			Pour un lien de capacité $C$, pour $i$ connexions actives de poids $w_i$ et $AC$ l'ensemble des connexions actives, la $i$ème connexion obtient une bande passante
+			
+			$$\frac{w_i}{\sum_{k \in AC} w_k} \times C \geq \frac{w_i}{\sum_{\text{ tout } k}w_k} \times C$$
+			
+			$\frac{w_i}{\sum_{\text{ tout } k}w_k} \times C$ est la bande passante minimale garantie. La formule est également valable pour WRR.
+			
+			On a la propriété suivante du WFQ, avec $M$ la taille maximale de paquet et $C$ la capacité du lien :
+			
+			$$CT_{WFQ} \leq FT_{GPS} + \frac{M}{C}$$
+			
+			Supposons le pire des cas, avec des petits paquets très prioritaires et des gros paquets peu prioritaires : soit un flux $i$ avec une taille de paquet minimale $m$ et un flux $j$ avec une taille maximale de paquet $M$. On pose $w_j << w_i$ ; $\frac{w_i}{w_i + w_j} C \approx C$. 
+			
+			Avec GPS, les deux paquets sont servis simultanément, mais $i$ est prioritaire.
+						
+			\dessinS{100}{.65}
+			
+			On a $t_1 = \epsilon + \frac{m}{\epsilon}$ et $t_2 = \frac{m + M}{C}$. Dès lors,
+			
+			$$FT_{j, GPS} = \frac{m + M}{C} \quad \quad FT_{i, GPS} = \frac{w_i}{\sum w_k} \times \frac{m}{C} \approx \frac{m}{C}$$
+		
+		
+		
+			Avec WFQ, $j$ est servi en premier.
+		
+			\dessinS{101}{.65}
+			
+			$$CT_{j, WFQ} = \frac{M}{C} \quad \quad CT_{i, WFQ} = \frac{M + m}{C}$$
+			
+			
+			Le gros paquet ne verra pas de grosse différence, entre GPS et WFQ. Par contre, le plus petit aura une différence de $ \frac{M}{C} $
+			
+			\section{DRR - Deficit Round Robin}
+			
+			FQ et WFQ sont en $\mathcal{O}(\log N)$ ($N$ étant le nombre de files), dû à la structure de données à maintenir pour avoir l'ordre de sortie des premiers paquets de chaque flux.% ([dessin 21])
+			
+			Le DRR est une approximation de FQ, avec une complexité $\mathcal{O}(1)$, la même complexité que $RR$. Il peut gérer les paquets de taille variable sans connaître la taille moyenne, comme FQ.
+			
+			On assigne une variable à chaque file, un deficit counter, qui quantifie le fait qu'une file n'a pas été traitée équitablement. 
+			
+			Si ce counter satisfait une condition (la file a été trop désavantagée), le paquet de tête sera traité ; si le déficit est plus grand que la taille $p$ du paquet, on sert le paquet, et on diminue le déficit par la taille du paquet. Si le déficit est plus petit que $p$, on ne sert pas le paquet, et on augmente le déficit de $p$. On passe ensuite à la file suivante.			
+			
+			%[dessin 22]
+			
+			Cet algorithme est beaucoup plus simple, mais n'a pas toutes les propriétés des autres algorithmes (par exemple, il n'y a pas de borne supérieure sur le délai).
+		

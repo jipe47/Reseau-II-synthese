@@ -1,0 +1,110 @@
+\chapter{L'architecture DiffServ (services différenciés) : principes - classes de services - notion de PHB - mise en oeuvre de l'architecture}
+
+On va définir des classes de services (Platinum, Gold, Silver).
+		
+		\section{Principes}
+		Le système a été pensé pour la scalabilité : les fonctions sont basées sur les classes et non sur les flux. On peut avoir des millions de flux, on a toujours 3 classes à traiter ; du coup, on n'a plus de signaling (à part celui qui définit le chemin pour de l'unicast et le multicast).
+		
+		\section{Architecture}
+		
+		Dans une architecture Diffserv, on définit deux types de routeur :
+		
+		\begin{itemize}
+			\item les edge routers : ils gèrent le trafic par flux et marquent les paquets de deux manières :
+			
+			\begin{itemize}
+				\item ils leur assignent le code d'une classe
+				\item ils marquent les paquets comme In ou Out
+			\end{itemize}
+			
+			Le management est par flux, car il y en a moins sur les bords que dans le réseau même.
+			
+			\item les core routers : ils gèrent le trafic par classe. Ils bufferisent et ordonnancent les paquets sur base du marquage, et mettent en avant les paquets marqués comme In dans les stratégies de drop. Ils ne font que lire les classes assignées aux paquets.
+		\end{itemize}
+		
+			\subsection{Edge routers}
+			
+			Le paquet est marqué dans le champ ToS en IPv4, ou dans le champ Traffic Class en IPv6 ; ces bytes sont renommés DS bytes.
+			
+			\dessinS{117}{.65}
+			
+			6 bits sont utilisés pour le DSCP (Differentiated Service Code Point), les deux autres sont inutilisés (CU - currently unused). Un usage possible serait dans la stratégie de drop ECN (qui doit signaler la congestion).
+			
+			Ainsi, on doit coder la classe et la couleur dans les 6 bits. Les deux derniers bits sont utilisés par ECN : le premier sert à indiquer si le paquet peut être marqué ou non, et le second est le marquage.
+			
+			Un utilisateur accepte de limiter son trafic selon un profil de trafic : c'est le concept de SLA/SLS (Service Level Agreement/Specification).
+			
+			Le SLA, défini par un ISP, assigne des quotas de classe à une source en fonction du contrat passé. Ainsi, cela évite qu'une source n'envoie que des paquets platinum par exemple. Le SLA se trouve entre le shaper/dropper et le policer.
+			
+			\dessin{118}
+			
+			On a les trois composantes :
+			
+			\begin{itemize}
+				\item Classifier : classification basée sur le header du paquet.
+				\item Marker : assignation DSCP, downgrading, réassignement.
+				\item Shaper/dropper : retardement ou jet des paquets s'ils ne sont pas conformes.
+			\end{itemize}
+		
+
+		
+		 
+		
+			\subsection{Core routers et PHB}
+			
+			Le PHB (Per-Hop Behavior) décrit l'action qu'effectuera le routeur en fonction de la classe d'un paquet, sous forme de service. Cela définit de manière abstraite le traitement à effectuer, mais rien de concret (aucun mécanisme n'est définit).
+			
+			On distingue trois types de forwarding défini par PHB :
+			
+			\begin{itemize}
+				\item EF - Expedited Forwarding : trafic a haute priorité, avec une file FIFO spécifique. Le taux de départ des paquets d'une classe est égal ou excède un débit spécifique, même à des petites échelles de temps ; cela équivaut à un lien logique avec un minimum de garantie de débit.
+				
+				Pour qu'il n'écrase par les autres classes, il faut qu'il soit contrôlé. Ainsi, au niveau du policing, le paquet est droppé s'il n'est pas vert.
+				
+				\item AF - Assured Forwarding : moins de pertes de paquet que le best effort. Les flux de différentes classes sont isolés, mais les flux d'une même classe sont en compétition. Les garanties de bande passante s'appliquent aux classes, pas aux flux individuels.
+				
+				Le standard définit seulement qu'il y a 4 classes (AF1, AF2, AF3, AF4), mais pas ce qu'on doit mettre dedans. Chaque AF garantit un minimum de bande passante, il y a une file FIFO par AF. Elles peuvent être utilisées pour isoler les types de trafic les uns des autres (par exemple ne pas mettre TCP et UDP dans la même classe).
+				
+				Chaque AF peut avoir trois niveaux de jet de paquet, représentés par 3 couleurs (il n'y a pas de couleur dans EF car si un paquet n'est pas conforme, il est jeté).
+				\item BE - Best Effort
+				\item LBE - Less Than Best effort
+			\end{itemize}
+			
+			\subsection{Interconnexion de domaines typique}
+			
+			\dessin{132}
+			
+			La source S va dont émettre des paquets. Elle pourrait les marquer avec un DSCP approprié, mais c'est dangereux dans le sens où elle pourrait en abuser (en marquant tout en EF par exemple). Il vaut mieux que le premier routeur, R, classifie les paquets et assigne le DSCP en accord avec une police de QoS. Cette classification est multi-field (MF), mais n'est faite qu'une fois.
+			
+			Les routeurs rouges vont appliquer un mécanisme de shaping sur les flux agrégés avant de les faire entrer sur un autre domaine, de manière à ce qu'ils remplissent les conditions de SLA en place. A noter que le routeur R peut déjà l'avoir fait sur des flux individuels.
+			
+			Il est logique que ce soit ER qui marque les paquets (si ce n'est pas déjà fait, par R par exemple), car tout le flux du réseau passe par ce point. Du coup, le marquage tient compte de l'entièreté du trafic, tout comme le SLA.
+			
+			Ce sont les routeurs bleus qui vont filtrer le trafic entrant et appliquer un mécanisme de policing, afin d'être en accord avec le SLA établit. Ils peuvent
+			
+			\begin{itemize}
+				\item remarquer le paquet,
+				\item jeter des paquets non conformes, ou
+				\item diminuer l'importance de paquets non conformes (plus de chance de drop).
+			\end{itemize}
+			
+			Le routeur vert n'effectue que du packet forwarding et du scheduling/dropping par classe ; il ne fait que lire le DSCP.
+			
+			\section{Les services différenciés et MPLS}
+			
+			Les paquets IP sont encapsulés dans des frames MPLS, du coup DSCP est invisible aux yeux des LSRs. On aimerait appliquer le bon PHB aux frames MPLS.
+			
+			\dessin{119}
+			
+			On a deux possibilités :
+			
+			\begin{itemize}
+				\item E-LSP (EXP LSP) : on peut utiliser les trois bits EXP, mais le problème est que DSCP est défini sur 6 bits ; on ne peut définir que 8 PHBs par domaine. On doit donc faire un mapping qui fait perdre des propriétés (par exemple définir EF, AF1 3 couleurs, AF2 3 couleurs et BE ; AF3 et AF4 sont mappés sur AF1 et AF2).
+				
+					\item L-LSP (Label LSP) : on utilise les labels ; une relation label-PHB doit être mise en place.
+					
+					Le préséance de jet est toujours placée dans le champ EXP, et cela consomme plus de labels.
+			\end{itemize}
+			
+			On va encoder la couleur dans EXP, car il ne faut pas changer le level : on peut dégrader un paquet, mais pas changer sa route, au risque d'avoir des paquets désordonnés.
+		

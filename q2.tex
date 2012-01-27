@@ -1,0 +1,223 @@
+\chapter{Réseaux ATM : principes - intégration d'IP et d'ATM, difficultés et insuffisances}
+
+	
+	Ce sont des technologies de circuits virtuels qui offrent des architectures complètes, dérivées des compagnies de téléphone. Elles sont déployées à des plus petites échelles que IP. Pour améliorer la technologie IP, on peut passer par un réseau ATM.
+	
+	\section{ATM - Asynchronous Transfer Mode}
+
+	Cette technologie se distingue d'IP par le fait qu'elle est asynchrone, et qu'elle vise à avoir de bons taux de transfert tout en rassemblant toutes les fonctionnalités en un seul réseau.
+	Le but premier est de donner un moyen de transport à la voix, la vidéo et les données, avec des garanties (contrairement au "best effort" d'IP). Il s'agit d'une évolution du réseau téléphonique qui supporte le packet-switching à travers des circuits virtuels.
+	
+	\dessin{6}
+	
+	On distingue trois couches dans un réseau ATM : 
+	
+	\begin{enumerate}
+		\item la couche adaptative (adaptation layer) : seulement aux extrémités d'un réseau, elle permet la segmentation et le réassemblage des données. Elle correspond à la couche transport d'Internet ;
+		\item la couche ATM : possède les fonctionnalités réseau, c'est-à-dire le routage et le cell switching ;
+		\item la couche physique.
+	\end{enumerate}
+	
+	\dessin{7}
+	
+	ATM est plutôt considéré dans la couche 2 d'un réseau IP (pas les applications) ; actuellement il est imbriqué dans IP et est invisible à l'utilisateur. Il est surtout utilisé pour les connexions entre des routeurs et des noeuds dans le réseau (edge-to-edge) et non aux extrémités (end-to-end).
+	
+		\subsection{ATM Adaptation Layer - AAL}
+		
+		Cette couche permet d'adapter les couches supérieures (généralement IP, mais des applications ATM natives sont possibles) aux couches ATM inférieures. Elle n'est située qu'aux extrémités d'un réseau ATM (donc dans les routeurs IP), pas dans les switchs ATM.
+	
+	
+		Il existe plusieurs versions de couche AAL, selon la classe de service ATM souhaitée :
+		
+		\begin{itemize}
+			\item AAL1 : pour des services CBR (Constant Bit Rate) (ex : émulation de circuits, VoIP)
+			\item AAL2 : pour des services VBR (Variable Bit Rate) (ex : vidéo MPEG)
+			\item AAL5 : pour des données (ex : datagrammes IP)
+		\end{itemize}
+		
+	
+	Comme IP, le payload est inséré dans une trame, mais au lieu de l'envoyer directement, elle est fragmentée en cellules. Cette fragmentation permet de satisfaire des critères de qualité selon les services souhaités.
+	
+	\dessin{8}
+	
+		\subsection{Circuits virtuels}
+		
+		On a un mécanisme de transport des cellules à travers des circuits virtuels. Un appel au réseau est effectué afin d'en mettre un en place, et ce avant que les données soient envoyées.
+		
+		Chaque paquet est estampillé par un identifiant de circuit virtuel (VCI), qui n'est pas l'adresse de destination.
+		
+		Chaque switch sur le chemin entre la source et la destination va maintenir un état à chaque connexion qui passe par lui : à un identifiant de circuit virtuel est associé une interface de sortie. Des ressources peuvent être réservées (buffer, cpu, bande passante), ce qui permet d'avoir des performances similaires à des circuits.
+	
+	Des circuits virtuels permanents (PVC) peuvent être définis, afin de ne pas chaque fois les rétablir. Ils établissent généralement une route permanente entre les routeurs IP.	
+	
+	Il existe aussi des circuits virtuels dynamiques (switched VC) qui sont utilisés pour des transferts courts, dont l'installation se fait lors d'un appel.
+	
+	L'avantage des circuits virtuels réside dans les performances et les garanties de QoS (Quality of Service), que ce soit en bande passante ou en délais.
+	Des désavantages :
+	
+	\begin{itemize}
+		\item les datagrammes sont mal supportés, alors que c'est le type de trafic le plus courant ;
+		\item pas scalable, beaucoup de connexions sont nécessaires entre des paires source/destination pour un circuit virtuel permanent ($\mathcal{O}(N^2)$);
+		\item pour un circuit virtuel dynamique, il y a un délai dû à l'établissement du circuit et dans le processing de l'overhead pour des connexions courtes.
+	\end{itemize}
+	
+	
+	\subsection{Couche ATM}
+	
+	Le service qu'offre cette couche est le transport de cellules ATM à travers un réseau ATM. Elle correspond à la couche réseau d'IP, mais ses services différent.
+	
+	\dessinS{9}{.6}
+	
+	Pour le CBR et le VBR, il n'y a pas de problème de timing, car de la bande passante est déjà réservée, donc pas de bufferisation.
+	
+	Le mode ABR (Available Bit Rate) consiste en un bitrate variable selon l'état du réseau. Il y a la possibilité pour les applications de demander une diminution du débit s'il y a des pertes (congestion) ou de l'augmenter si le chemin est sous-utilisé. C'est similaire à TCP, si ce n'est que la congestion est donnée explicitement, alors que TCP la déduit des pertes.
+	
+		
+	Des cellules dites RM (ressource management) peuvent être utilisées pour modifier le débit de la source ou marquer de la congestion, par le destinataire ou les switchs.
+	
+	\dessin{10}
+	
+	Ces cellules sont entrelacées avec des cellules de données. Des bits à l'intérieur même de ces cellules sont modifiés par les switchs, pour donner un feed-back du réseau. Il y a notamment  :
+	
+	\begin{itemize}
+		\item un bit NI (no increase) : il ne faut pas augmenter le débit (congestion bénigne)
+		\item un bit CI (congestion indication)
+		\item deux bytes ER (explicit rate) : spécifient le débit maximal de l'expéditeur utilisable sur le chemin
+		\item un bit EFCI (explicite forward congestion indication) : bit mis à un s'il y a des switchs congestionnés. Lorsqu'une cellule de données précédant une cellule RM a ce bit à 1, le destinataire met à 1 le bit CI de la cellule RM à renvoyer.
+	\end{itemize}
+	
+	Ces cellules sont retournées à l'expéditeur par le receveur, sans modifier les bits.
+	
+	
+		\subsubsection{Cellule ATM}
+		
+		\dessin{12}
+		
+		Le header est de 5 bytes et comporte les champs suivants :
+	
+		\begin{itemize}
+			\item VCI : le numéro de canal virtuel, qui change d'un lien à un autre 
+			\item PT : Payload type, permet de discriminer les cellules de données et les cellules RM
+			\item CLP : Cell Loss Priority. S'il est à 1, cela indique que la cellule n'est pas prioritaire, et qu'elle peut donc être jetée en cas de congestion.
+			\item HEC : Header Error Checksum, check de redondance cyclique permettant de détecter des erreurs.
+		\end{itemize}
+		
+		\dessin{11}
+						
+		Les paquets sont de taille fixe (48 bytes) et petits, sinon il faudra du temps pour collecter des bits afin de créer un paquet plus grand, ce qui peut être problématique pour l'application (pour la voix par exemple). 
+	
+		Une taille fixe implique une taille petite, sinon il y aurait un gaspillage de ressources. De plus, dans un switch, lors de la redirection d'un paquet, avec une matrice de commutation, le parallélisme est amélioré (tous les transferts prennent le même temps) et on peut calculer des débits de cellules et donner des garanties facilement.
+	
+		\subsection{Couche physique}
+		
+		% [2-16 à 2-17, non demandé ?]
+		
+		Les débits (OC3, OC12, etc) ne sont pas entiers, car les normes sont spécifiées pour utiliser des composants analogiques.
+	
+	\section{IP sur ATM}
+	
+	ATM a été placé sous IP (et non l'inverse), car IP a été très vite populaire. ATM se voulait un concurrent d'Ethernet, plus rapide et également disponible aux hôtes. Le problème était l'aspect bon marché d'Ethernet qu'ATM n'avait pas, car c'est une technologie beaucoup plus simple.
+	
+	ATM s'est donc retrouvé dans le coeur, au niveau des ISP, au même titre qu'Ethernet. Certains routeurs disposent ainsi de deux types d'interface (ATM et Ethernet).	
+	
+	Les réseaux ATM remplacent généralement un réseau IP ; les trames IP sont encapsulées et fragmentées en cellules ATM.
+	
+	\dessin{13}
+	
+	Pour un datagramme, à la source (hôte ou routeur), la couche IP mappe l'adresse IP et l'adresse ATM de destination, en utilisant ATM ARP. Ensuite, le paquet IP est passé à la couche adaptative (AAL5) qui l'encapsule (c'est l'équivalent d'une trame Ethernet). Ensuite la couche adaptative segmente la trame en cellules ATM, qui sont ensuite passées à la couche ATM.
+	Le réseau ATM va alors déplacer les cellules le long du circuit virtuel jusqu'au destinataire.
+	A l'arrivée, AAL5 va réassembler le datagramme original, et si le CRC est valide, il est passé à IP.
+
+	Le problème est de traduire l'adresse IP du routeur à atteindre en une adresse ATM. Il suffit de mapper les adresses IP à des adresses MAC, cependant, le broadcast n'est pas disponible aussi facilement qu'en Ethernet avec ARP ; il faudrait un circuit qui permet d'atteindre tous les périphériques. On définit pour cela l'ATMARP.
+	
+	Un serveur sera désigné dans le système, auquel on adresse les requêtes de type ARP (résolution d'adresses, ne fonctionne pas comme Ethernet). Ensuite, il faudra établir un circuit. Ces étapes (résolution et établissement de circuit) peuvent être passées si le circuit est déjà établi.
+	
+		\subsection{Topologies}
+			\subsubsection{Full-mesh}
+		
+			Chaque routeur doit être connecté avec les autres routeurs grâce à un circuit virtuel permanent. Il y a donc $\frac{n (n - 1)}{2}$ circuits virtuels permanents, ce qui donnera une topologie de type full-mesh.
+		
+			\dessin{14}
+	
+			Lors d'une perte de connexion, soit on peut tenter de la récupérer au niveau ATM, soit on recalcule des tables d'acheminement au niveau IP. En pratique, cela dépend des temps de récupération de ces deux méthodes.
+	
+			Cependant, il y a des problèmes de scalabilité :
+	
+			\begin{itemize}
+				\item le nombre de circuits virtuels ATM est quadratique par rapport au nombre de routeur ;
+				\item avec autant de liens, cela peut créer des problèmes lors de la création des tables d'acheminement. Par exemple, pour OSFP, lors de la découverte des voisins (pour générer la topologie), un paquet aura une taille N (car N voisins à décrire) qui sera envoyé à N liens, et ce pour chacun des N noeuds : la complexité en nombre de message est cubique ;
+				\item si un lien ATM tombe en panne, on peut perdre énormément de liens IP. La récupération peut augmenter la charge, de l'ordre de $N^4$ (routing storm).
+			\end{itemize}
+	
+			En pratique, on limitera le nombre de routeurs (environ 100).
+
+			\subsubsection{Intégration de routeurs Ethernet}
+			
+			Une solution est de découper le réseau en plus petits sous-réseaux, en plaçant des routeurs Ethernet dans le coeur du réseau.
+	
+			\dessin{15}
+	
+			Cela réduit le nombre de voisin des routeurs, de même que le nombre de circuits virtuels (notamment ceux perdus lors d'une panne ; il n'y a plus de edge-to-edge). Cependant,
+			\begin{itemize}
+				\item il y a plus de hop à effectuer ;
+				\item il peut y avoir une perte de qualité de service ATM (cas d'un routeur congestionné). En effet, l'ATM switching est délaissé pour l'IP switching ;
+				\item certains routeurs peuvent se passer d'ATM pour communiquer entre eux (cas extrêmes) ;
+				\item les routeurs introduisent des délais ; un routeur doit attendre toutes les cellules du paquet afin d'avoir la destination IP, puis réencapsuler et refragmenter le paquet et enfin le renvoyer. Les délais seront plus élevés.
+			\end{itemize}
+			
+			L'idéal serait de ne pas devoir réassembler et désassembler les cellules ATM.
+	
+			\subsubsection{Intégration de switchs IP}
+						
+			On a donc, pour les gros réseaux, un dilemme entre l'acheminement de données (où ATM est meilleur) et la signalisation (mise à jour du routage) (où IP est meilleur).
+
+			La solution serait d'avoir les switchs ATM au coeur et d'utiliser le routage IP sur eux. Cela réduit le nombre d'adjacences OSP et il n'y a pas d'overload pour les mises à jour de routage. Le routing d'ATM est en quelque sorte remplacé par le routage d'IP ; on utilise du hardware ATM avec du software IP.
+						
+			%L'idée est de placer des switchs ATM et de lancer un algo de routage IP dedans (type OSPF). On utiliserait ATM pour le transfert et IP pour la signalisation.
+		
+			En découlent des switchs IP, des hybrides entre un routeur IP et un switch ATM. Des connexion ATM sont utilisées pour communiquer entre les switchs. Cependant, le chemin est généré par ces hybrides.
+			
+			\dessin{16}
+			
+			Le chemin suivi par les cellules ATM (donc les circuits virtuels) correspondent aux plus courts chemins d'IP.
+			Quand un lien tombe en panne, seulement deux switch IP perdent une adjacence, il n'y a pas de routing storm pour la mise à jour de la topologie. Cependant, tous les circuits virtuels interrompus doivent être reroutés.
+	
+			Cependant, on retrouve des problèmes avec le routage par IP :
+	
+			\begin{itemize}
+				\item certains liens peuvent être surchargés alors que d'autres sont inutilisés (topologie de poisson)
+				
+				\dessin{17}
+				
+				Par exemple, si le plus court chemin de C à G est CDG, alors tous les flux qui viennent de A et de B vers G utiliseront le chemin CDG. Cela créera de la congestion, et c'est inefficace en sachant que le chemin CEFG est inutilisé.
+				
+				La solution serait de mettre un poids sur les liens, mais si on assigne comme poids le trafic, on aura des oscillations.
+				
+				On pourrait introduire du load balancing ; OSPF pourrait conserver, pour une même destination, plusieurs routes qui auraient le même coût. Cependant, cela ne suffit pas dans la topologie en forme de poisson.
+				
+				
+				 %surcharge de liens. Cela peut se résoudre en jouant sur les poids des liens.
+					
+				\item les réseaux IP sont uniquement basés sur la destination. Cela peut être contourné en utilisant d'autres champs du header IP, comme l'adresse source ou le type de service (TOS). Par exemple, pour la topologie du poisson, le flux venant de A aurait un chemin différent de celui du flux venant de B.				
+				C'est mieux pour gérer le trafic, mais pas scalable car il y a potentiellement beaucoup d'entrées dans la table d'acheminement.
+		
+				%Une autre solution est de définir des services, mais cela augmente aussi la taille de la table d'acheminement.
+		
+				On pourrait aussi spécifier la route dans le paquet IP ; des adresses IP intermédiaires seraient spécifiées dans les options du paquet. Cependant, cela augmente la taille de l'entête, et beaucoup d'ISP ne s'en soucient pas.
+		
+				On peut aussi spécifier des contraintes, par exemple avec une bande passante minimale, ou un délai à ne pas dépasser. Il faudrait pour cela attribuer plusieurs métriques à chaque lien, sans pour autant garantir quoi que ce soit.
+			\end{itemize}
+	
+			On perd donc toutes les features du routage ATM.
+			
+			On se retrouve donc avec plusieurs problèmes :
+			
+			\begin{itemize}
+				\item la nécessité d'avoir des bonnes performances de forwarding (ATM), ou de l'équipement bon marché
+				\item la complexité du mapping IP vers ATM
+				\item des problèmes de scalabilité
+				\item la nécessité d'ajouter des nouvelles fonctionnalités de routing
+			\end{itemize}
+			
+			Le but d'MPLS est de résoudre ces problèmes.
+			

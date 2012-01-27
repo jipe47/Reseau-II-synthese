@@ -1,0 +1,283 @@
+\chapter{L'architecture IntServ (services intégrés) : principes - garanties de bande passante et de délai - réservation de ressources (RSVP)}
+
+		\section{Principes}
+Il s'agit d'une architecture qui offre des garanties de QoS dans les réseaux IP, pour des sessions individuelles. Il y a une réservation de ressources, les routeurs maintiennent un état (comme avec les circuits virtuels) de ressources allouées.
+			
+			La question est de savoir si des nouveaux flux peuvent être admis avec les garanties de performances, et ce sans violer les garanties de QoS établies pour les flux admis.
+		
+		\section{Garanties de bande passante}
+		
+		Soit un lien de capacité $C$. On considère qu'un flux est admis si et seulement si la somme de tous les flux n'excède pas $C$.
+		
+		On va assigner un poids $w_i$ à un flux $i$. Il aura ainsi une certaine bande passante $B_i$. Par exemple, avec WFQ, on aura
+		
+		$$B_i = \frac{w_i}{\sum_{\forall \quad k} w_k} \times C$$
+		
+		et même plus si les autres flux ne sont pas actifs.
+		
+		L'assignation des poids est un mapping entre des demandes $B_i$ et $w_i$. On a que $w_i = \alpha B_i$.
+		
+		Par exemple, supposons que $w=1$ correspond à $1kbps$ ($\alpha = 0.001$) ; un flux de $1Mbps$ se voit assigné $w = 1000$. Si le flux est seul, il aura $\frac{1000}{1000} \times C = C$. Si tous les flux admis valent collectivement $C$, la somme des poids vaut $\alpha C$, et le flux en question aura $\frac{1000}{\alpha C} \times C = \frac{1000}{\alpha} = \frac{1000}{0.001} = 1Mbps$.
+		
+		
+		\section{Garanties de délai}
+		
+			\subsubsection{Théorème de Parekh-Gallager}
+			
+			Soit un flux qui a des poids définis à chaque scheduler WFQ sur son chemin, de manière à ce que $g$ soit la plus petite bande passante réservée.
+			
+			Supposons qu'il soit régulé par un token bucket de paramètre $(\rho, \sigma)$, avec $g \geq \rho$.
+			
+			Supposons que le flux passe à travers $K$ schedulers WFQ, où le $k$ème scheduler possède un débit $r(k)$ égal à la capacité du lien. On a $g \leq r(k)$.
+			
+			Soit le plus gros paquet admis dans le réseau de taille $P$ et le plus gros paquet admis par le flux de taille $M$.
+			
+			On a la formule de Parekh-Gallager, qui borne le délai dans le réseau :
+			
+			$$\text{délai end-to-end } \leq  \text{ délai de propagation } + \frac{\sigma}{g} + \sum_{k = 1}^{K - 1} \frac{M}{g} + \sum{k = 1}{K} \frac{P}{r(k)}$$
+		
+			$\frac{\sigma}{g}$ est le délai obtenu par le dernier paquet d'un burst de taille maximale $\sigma$ et arrivant à une file déservie à un débit $g$. Cela comprend le délai de queuing et de transmission.
+			
+			C'est un délai car on a une quantité de bits divisée par une bande passante (bits par seconde). C'est le temps qu'il faut pour que tous les bytes soient traités dans le buffer ; dans le pire des cas, c'est le dernier paquet du burst. C'est le terme principal ; il serait le seul si les paquets étaient des fluides.
+			
+			A noter que ce terme n'apparaît qu'une fois. En effet, si le délai survient au premier noeud, les noeuds suivants ne recevront pas de burst. Les buffers sont en série ; quand un premier paquet est traité par un deuxième buffer, le deuxième paquet entre dans le deuxième buffer.			
+			
+			Les autres termes permettent de corriger le fait qu'il y a des bufferisations et des temps de transmission à chaque noeud.
+			
+			Ainsi, les $K - 1$ sous-termes sont les délais de transmission pour un paquet de taille $M$ dans un noeud déservi par un scheduler GPS (où les paquets arrivent dans des files GPS inactives à un débit $g$).
+			
+			Dans le pire des cas, on envoie le plus gros burst ($M$) et ensuite coller à la limite ($g$).
+			
+			Le dernier terme fait correspondre la borne au WFQ (sans cela, on a le GPS). A chaque noeud $k$, le paquet peut être transmis, dans le pire des cas, $\frac{P}{r(k)}$ secondes après son temps GPS théorique.
+		
+		
+			Ce théorème signifie que
+			
+			\begin{itemize}
+				\item il est possible, pour des WFQ, de fournir une borne sur le délai end-to-end,
+				\item plus $g$ est grand (donc plus de bande passante), plus le délai sera court, et
+				\item plus on envoie en burst, plus on a des fluctuations dans les buffers, et la possibilité d'avoir des grands délais.
+			\end{itemize}
+			
+			Au niveau des flux régulés par des token bucket, les autres schedulers assurent que le délai end-to-end satisfait aussi la formule
+			
+			$$\text{délai end-to-end } \leq \frac{\sigma}{g} + \frac{C}{g} + D$$
+		
+			Le problème est que, pour avoir une borne, il faut choisir $g$ :
+			
+			\begin{itemize}
+				\item plus la borne sur le délai est petite, plus $g$ doit être grand (quand $\sigma$ est fixe)
+				\item un grand $g$ signifie l'exclusion de plus de compétiteurs pour le lien
+				\item $g$ peut alors devenir très grand, dans certains cas plusieurs fois le peak rate de la source.
+			\end{itemize}
+			
+			De ce fait, les sources doivent être régulées par un leaky-bucket.
+			
+			Les schedulers en WFQ couplent une allocation de bande passante et un délai ; un délai petit nécessite une grande bande passante. On a un gaspillage de bande passante pour les sources qui nécessitent des petits délais avec une petite bande passante (par exemple la voix). Ce n'est pas un problème quand plusieurs flux sont agrégés dans la même classe (et donc dans la même file).
+		
+		
+		
+		% 14 - 12 - 11
+		\section{Réservation de ressources - RSVP signaling}
+		
+		A l'origine, il n'y a pas de protocole de signaling dans IP ; on a seulement des routeurs connectionless qui forwardent par  l'IP.
+		
+		On a un nouveau prérequis : la possibilité de réserver des ressources sur le chemin d'un paquet, pour du QoS pour des applications multimédia.
+		
+		Ainsi, pour une session, on doit
+		
+		\begin{itemize}
+			\item déclarer les services QoS que l'on désire, ce sont les R-spec, et
+			\item caractériser le trafic qui sera envoyé, ce sont les T-spec.
+		\end{itemize}
+		
+		Un protocole de signalisation est nécessaire pour communiquer les R-spec et les T-spec aux routeurs (où une réservation est nécessaire), c'est le rôle de RSVP.
+		
+		On peut distinguer deux types de protocole :
+		
+		\begin{itemize}
+			\item Les data planes : couches réseaux qui interagissent directement avec les données utilisateurs, par exemple IP.
+			\item Les control planes : couches en arrière-plan, qui définissent les états (par exemple RSVP, un algorithme de routage).
+		\end{itemize}
+		
+		RSVP est de type control plane, son but est avant tout de supporter les applications multicast avec une réservation de ressources. On est donc dans le cas où on peut avoir plusieurs sources et récepteurs. Cela n'a rien à voir avec le routing multicast, qui est géré par exemple par PIM, un protocole de type control plane.
+		
+		On définit plusieurs styles de réservation :
+		
+		\begin{itemize}
+			\item une seule réservation partagée, pour toutes les sources,
+			\item une réservation distincte par source, ou
+			\item une réservation distincte partagée par un ensemble de sources.
+		\end{itemize}
+			
+			\dessin{121}
+			
+			\subsection{Réservation par source}
+			
+			Il s'agit d'une réservation dite FF (Fixed-Filter).
+			
+			\dessin{124}
+			
+			Une source peut avoir différentes réservations.
+			
+			\dessin{122}
+			
+			L'host 3 va demander une réservation de $B$ bits/s. $FF$ : réservation fixe pour une source. Lorsque l'hôte 5 voudra faire une réservation, seul un segment sera réservé, car une partie du chemin est déjà en place.
+			
+			L'hôte 4 profite de la réservation jusqu'au dernier lien, et tant que la réservation $B$ n'est pas dépassé.
+			
+			\subsection{Réservation partagée par des sources}
+			
+			Ce schéma est appelé réservation SE (Shared-Explicit). Cela convient pour les applications où une seule source peut émettre à la fois (ex : conférence téléphonique).
+			
+			\dessin{123}
+			
+		
+			SE(S1\{B\}) peut être fusionné avec SE((S1, S2)\{B\}), mais FF(S1\{B\}) ne peut pas, car...
+		
+		
+			\subsection{Messages RSVP}
+			
+			La source envoie des messages PATH en multicast, sur le spanning tree du groupe, qui décrit l'enveloppe du trafic. Les récepteurs peuvent dès lors envoyer un message RESV qui effectue la réservation.
+			
+			\dessin{125}
+			
+			Ce sont donc les récepteurs qui s'occupent des réservations. C'est logique, car les récepteurs peuvent être très hétérogènes, et certains peuvent avoir les moyens de faire des réservations, d'autres pas.
+			
+			Les messages PATH sont donc envoyés par la source, et décrivent les T-SPEC.
+			
+			Les messages RESV contiennent un message qui fait la réservation (R-SPEC) ; ils contiennent la quantité de ressources qu'ils veulent réserver. Ces messages suivent donc la même route que le chemin suivi par les messages PATH.
+		
+			
+			Le chemin de retour n'est pas nécessairement le même que pour l'aller (car le spanning tree provient de sources différentes), or il faut que le RESV suivent le même chemin (à l'envers) que le PATH. Un état est alors mis en place dans les routeurs pour garder une trace de l'interface d'entrée d'un message PATH. Ainsi, quand un RESV est reçu, on connaît l'interface de sortie. 
+		
+			Les messages RESV vont revenir aussi loin que c'est nécessaire vers la source ; ils ne sont forwardés vers la source que si la requête de réservation est plus grande que la réservation déjà mise en place pour le groupe multicast. On a ainsi une réservation Hop-by-hop.
+		
+		
+			\subsection{Types de réservation}
+			
+			Le type de réservation est spécifié dans les messages RSVP. On en a trois :
+			
+			\begin{itemize}
+				\item Fixed-filters (FF) : réservation pour recevoir depuis un seul émetteur, les autres sources ne l'utiliseront pas ;
+				\item Shared-Explicit (SE) : réservation pour recevoir depuis un ensemble de sources ;
+				\item Wildcard-Filter (WF) : réservation pour le groupe, c'est-à-dire pour recevoir depuis toutes les sources (c'est un SE avec toutes les sources).
+			\end{itemize}
+			
+			Seuls les paquets qui satisfont les spécifications du filtre utilisent les ressources réservées. Les autres utiliseront ce qu'il reste de la bande passante, sinon ils rentreront en mode best effort.
+			
+			\subsection{Etat dans les routeurs}
+		
+			Les protocoles dit Hard state sont ceux où on met en place et où on supprime un état explicitement. A l'inverse, un protocole dit Soft State supprime l'état tout seul, après une période. Il doit être périodiquement rafraîchit pour rester en place.
+			
+			Avec RSVP, l'état est soft ; il est périodiquement rafraîchit, des messages PATH et RESV doivent être envoyés fréquemment.
+			
+			Lors d'une failure, un protocole de routage unicast sera lancé pour reconstruire les routes. Ensuite, l'arbre multi-cast sera reconstruit dessus, et enfin on rétablira les réservations. On peut oublier les réservations précédentes, vu que c'est un état de type soft. Si c'était en hard, on pourrait avoir des ressources qui resteraient réservées, mais jamais utilisées.
+		
+			La période de rafraîchissement de la réservation ne peut pas être trop longue (car s'il y a une failure, on perdra la réservation pendant un moment) ni trop courte (sinon overhead).
+		
+			Lors d'un changement de topologie (link failure, ou changement du poids d'un lien), la priorité est de rétablir le routing avant de s'occuper de la réservation. De ce fait, cette dernière peut se remettre en place après un certain temps. La factorisation des problèmes de routage et de réservation est ici pénalisante ; par exemple en ATM ou MPLS il y a une réservation de ressources en même temps que l'établissement des routes. 
+		
+			De plus, avec ATM ou MPLS, (sauf failure), lorsqu'un VC est établit, le chemin va rester stable. Avec IP, le chemin peut changer dynamiquement, ce qui fait que les ressources peuvent ne pas suivre. De ce fait, on peut arriver à du best effort si la dynamique est trop importante.
+		
+			\subsection{Architecture d'un noeud avec RSVP}
+			
+			\dessin{126}
+			
+			Le contrôle Admission/Policy "décide" si on peut accepter une réservation ou non.
+			
+			La classification de flux permet de distinguer les flux qui ont une réservation de ressources ou non. S'ils n'en ont pas, on passe en best effort, sinon on lit le tag du paquet (utilisé seulement localement, il sera supprimé à la sortie).
+			
+			Le scheduler applique le service de scheduling/dropping pour les flux.
+			
+			\subsection{Description d'un flux}
+			Il y a trois spécifications.
+		
+			\subsubsection{FilterSpec}
+			
+			Elle permet d'identifier la(les) source(s).
+			
+			\begin{itemize}
+				\item avec IPv4, un flux est un flux de couche 4 ; la source est identifiée par son adresse IP et le port ;
+				\item avec IPv6, idem qu'IPv4, ou alors on utilise l'adresse IP de la source et le label du flux (header IPv6) ;
+				
+				\item avec MPLS, un flux est identifié par le label MPLS.
+			\end{itemize}
+			
+			Avec IPv6, le label de flux permet de faire une meilleure discrimination qu'avec le port, car une même application pourrait envoyer plusieurs flux différents. La source a ainsi plus de flexibilité (rassembler plusieurs petits flux en un plus gros par exemple).
+			
+			\subsubsection{Session}
+			
+			Elle identifie le(s) destinataire(s). Il s'agit de l'adresse IP (unicast ou multicast), de l'id du protocole et du numéro de port (optionnel)
+			
+			\subsubsection{FlowSpec}
+		
+			Cela comprend les T-SPEC et les R-SPEC.
+			
+			Les TSPEC sont un quintuplet $(r, b, p, m, M)$, où
+			
+			\begin{itemize}
+				\item $r$ le débit du token bucket (lié au débit moyen de la source) ($= \rho$)
+				\item $b$ la taille du token bucket (lié à la taille de burst maximale)($= \sigma$)
+				\item $p$ le peak rate
+				\item $m$ la taille de paquet minimale
+				\item $M$ la taille de paquet maximale
+			\end{itemize}
+			
+			Le couple $(M, p)$ formera le token bucket pour le peak rate. Les paquets plus grands que $M$ seront envoyés en best effort.
+			
+			Le couple $(b, r)$ formera le token bucket pour le débit moyen, avec une tolérance de burst $b$.
+			
+			Les paquets plus petits que $m$ seront considérés comme étant de taille $m$, afin de les pénaliser, car un grand overhead relatif est créé. \\
+			
+			Les RSPEC se limitent à $R$, le débit réservé en bytes/sec. D'après la formule de Parekh-Gallager, plus $R$ sera grand et plus le délai garantit sera bas.
+		
+			Le problème est que le récepteur doit connaître $K$, $P$ et $P(k)$ pour tous les $k$ afin de calculer $R$ en connaissant son délai end-to-end maximum, $M$ et $b$.
+			
+			La solution est que les messages PATH contiennent aussi les ADSPEC, un couple $(C, D)$ mis à jour à chaque hop sur le chemin, et défini ainsi :
+			
+			$$C = \sum_{\text{Hop visités}} M$$
+			
+			$$D = \sum_{\text{Hop visités}} \frac{P}{P(k)} + \text{délai de propagation du lien}(k)$$
+			
+			En connaissant $C$ et $D$, qui s'accumulent le long du chemin, le récepteur peut calculer $R$ pour obtenir le délai maximum. $R$ peut être plus grand que $r$ et même plus grand que $p$.
+			
+			Si aucun délai n'est nécessaire, on prend $R = r$, qui permet de garantir le débit moyen.
+			
+			\subsection{Ce que ne fait pas RSVP}
+		
+			\subsubsection{Spécifier comment les ressources doivent être réservées} Il ne fournit qu'un moyen pour les communications.
+			
+			Généralement, la réservation est faite en appliquant un poids approprié aux flux dans chaque scheduler WFQ sur le chemin.
+			
+			\subsubsection{Déterminer la route des paquets} C'est le travail de protocoles de routage (PIM par exemple) ; la signalisation est découplée du routage.
+			
+			L'exception est que RSVP est utilisé avec ERO (Explicit Route Object), pour mettre en place les LSPs MPLS point à point.
+			
+			\subsubsection{Interagir avec les paquets forwardés} Il y a une séparation du contrôle (signaling) et des données (forwarding).
+		
+		\section{IETF Integrated Services}
+			
+		
+		Deux types de services spécifiques sont décrits dans des RFCs : guaranteed service et controlled load service.
+		
+		
+			\subsection{Guaranteed service}
+			
+			Il s'applique aux applications qui nécessitent des délais courts, aucunes pertes et des garanties de bande passante.
+			
+			Les routeurs allouent ainsi de la bande passante et de l'espace dans les buffers.
+			
+			La source est décrite par le token bucket ($\rho, \sigma$), le peak rate et le MTU.
+			
+			On utilise la formule de Parekh pour calculer le délai maximal ; la bande passante réservée permet de parer au pire cas d'arrivée de trafic.
+			
+			Ce service s'applique "pour tous les paquets qui transportent la voix", etc.
+			
+			\subsection{Controlled load service}
+		
+			Il s'agit d'une qualité de service qui approxime le QoS qu'un même flux aurait eu dans le cas d'un réseau non chargé. On ne détériore pas la qualité quand il y a des augmentations de charge (plus ou moins le même délai, taux de perte et bande passante).
+			
+			Ce service est bon pour les applications qui peuvent tolérer une certaine quantité de délai (variations) et des pertes.
+			
+			Avec $R = r$ dans les RSPEC, on y arriverait.

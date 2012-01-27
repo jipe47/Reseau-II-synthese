@@ -1,0 +1,362 @@
+\chapter{Multimédia : compression audio et vidéo (MPEG et principes de JPEG) - streaming - RTSP}
+
+\section{Applications réseau multimédia}
+	
+	Il y a trois types d'applications MM (MultiMedia) :
+	
+	\begin{itemize}
+		\item stored streaming
+		\item live streaming
+		\item interactive, real-time
+	\end{itemize}
+	
+	Les caractéristiques fondamentales de ces applications sont que
+	
+	\begin{itemize}
+		\item elles sont sensibles au délai : le délai pour le transport end-to-end, ainsi que les variations de délai (delay jitter) ;
+		\item elles sont sensibles à la perte : des pertes peu fréquentes causent des glitchs mineurs ;
+		\item c'est l'antithèse des données, qui sont intolérantes à la perte, mais tolérantes sur le délai.
+	\end{itemize}
+	
+		\subsection{Streaming Stored Multimedia}
+	
+		Il s'agit du cas d'un média stocké sur une machine distance et auquel on voudrait avoir accès.
+		
+		Le streaming désigne le fait que le client peut commencer à jouer le fichier avant qu'il soit complètement transféré. On utilise un buffer, pour parer au risque de perte d'une transmission.
+		
+		Le fait que le streaming soit stocké fait que le buffer est de taille conséquent ; cela revient à télécharger le fichier complètement.
+		
+		\dessin{63}
+		
+		On peut y ajouter de l'interactivité (pause, FF), cette fonctionnalité agit un peu comme un circuit virtuel (VCR). On tolère un délai d'initialisation de 10 secondes, et un délai de 1 à 2 secondes pour qu'une commande prenne effet.
+		
+		\subsection{Streaming Live Multimedia}
+
+		Il s'agit toujours de streaming, si ce n'est que le buffer doit être plus petit et l'interactivité plus limitée (pas de FF). Cependant, on peut toujours revenir en arrière. On a toujours les contraintes de timing.
+		
+		\subsection{Real-Time Interactive Multimedia}
+		
+		Cela désigne la téléphonie par IP, la vidéo conférence, etc.
+		
+		Il y a une nécessité de délais très courts. Le temps de propagation intervient, mais le plus gros délais vient de la création du paquet (accumulation de données) ou de la compression des données ("facile" en audio, compliquée en vidéo).
+		
+		En général, en audio, un délai inférieur à 150ms est bon et inférieur à 400ms est tolérable.
+		
+			\subsubsection{Sur l'Internet d'aujourd'hui}
+		
+			TCP/UDP/IP sont des services du meilleur effort, il n'y a pas de garantie sur le délai ni la perte, or c'est ce qu'on souhaiterait avoir. Cependant, il est possible de mettre en place des techniques afin de limiter les effets (par exemple le playout buffer, qui permet d'avoir un flux constant mais en ajoutant du délai), avec des limites et des concessions à faire. Ces mécanismes sont à créer au niveau applicatif.
+		
+			Il y a plusieurs manières d'améliorer le support multimédia d'Internet :
+		
+			\begin{enumerate}
+				\item permettre la réservation de bande passante par les applications, ce qui nécessite du software plus compliqué dans les hôtes et les routeurs. Solution devant être standardisée.
+			
+				$\rightarrow$ Solution compliquée et coûteuse.
+			
+				\item laisser faire, pas de changements majeurs à part augmenter la bande passante quand c'est nécessaire. On pourrait aussi mettre en place du multicast, et si ce n'est pas possible au niveau du réseau, l'utiliser au niveau applicatif. On peut aussi utiliser des réseaux de distribution de contenu ; les fichiers sont répliqués à travers le monde, et lorsqu'on demande l'accès à un d'entre eux, on serait redirigé vers le serveur le plus proche.
+			
+				$\rightarrow$ Solution facile au niveau du réseau.
+			
+				\item introduire des changements plus légers, en ajoutant une discrimination entre deux types de trafic (prioritaire et best-effort).
+			
+				Problème : qu'est-ce qui va contrôler la classe du paquet ? On pourrait profiter de la priorité de la première classe pour profiter de la bande passante. De plus, c'est compliqué à mettre en place et coûteux, et on n'a pas nécessairement de garantie.
+			
+				D'un point de vue business, on pourrait appliquer un tarif plus élevé pour des paquets de première classe, avec un quota par utilisateur. C'est également une solution compliquée.
+			
+			\end{enumerate}
+		
+			Cependant, de nos jours, on préfère les solutions peu coûteuses et la connectivité à la qualité des services. La deuxième solution est utilisée ; la troisième commence à être implémentée par les ISP.
+		
+	\section{Compression audio et vidéo}
+		\subsection{Audio digital et compression}
+		
+		Le PCM (pulse code modulation) désigne l'échantillonnage de la voix sur 8 bits (en Europe). Cependant, vu qu'il n'y a que 255 possibilités, il y a une erreur d'arrondi, et la reconstruction du signal ne sera pas parfaite.
+		
+		L'échantillonnage doit être suffisamment grand que pour pouvoir capter toutes les fréquences. On restreint alors la voix dans la bande de fréquences de 0 à 4KHz. Grâce au théorème de Niquisk, on sait qu'il faut échantillonner au double de la fréquence maximale, soit 8KHz, pour pouvoir reconstruire le signal ; échantillonner plus ne servira à rien.
+		
+		On prend donc, par seconde, 8000 échantillons de 8 bits, ce qui fait un débit de 64kps.
+		
+		Le mapping de l'échantillon et de l'amplitude n'est pas linéaire ; on aimerait plus de valeurs (donc plus de précision) au début qu'à la fin de l'axe de l'amplitude. On utilise alors une échelle logarithmique.
+		
+		\dessin{64}
+		
+		Avec un débit de 64kbps, la qualité est excellente. Avec 32 kbps, on est à la limite de la bonne qualité.
+		
+		Avec de la musique, on a un plus grand spectre de fréquences à échantillonner, de 0 à 22KHz.
+		
+		Pour la téléphonie Internet, on peut mettre en place un modèle de la voix, et lors d'un échantillonnage, en extraire des paramètres qui permettront de reconstruire la voix via le modèle. 
+		
+		\dessin{65}
+		
+		Le codeur va ignorer ce qui ne peut pas être entendu par l'oreille humaine, les signaux masqués. Cette technique est utilisée par le codec MP3. On arrive ainsi à compresser des CD stéréos jusqu'à 96-128kbps.
+		
+		\subsection{Compression vidéo}
+		
+		Pour compresser de la vidéo, on exploite la redondance spatiale (dans l'image) et temporelle (d'une image à l'autre).
+		
+		Un domaine de recherche sont les layered videos : il y a un envoi de "couches de qualité", qui seront ignorées d'après certains critères (support de transmission, etc).
+		
+		\dessinS{66}{.6}
+		
+		On dispose de plusieurs schémas d'encodage et de décodages. Il y a deux types de schémas :
+		
+		\begin{itemize}
+			\item les schémas asymétriques ; par exemple, en VoD, l'encodage peut être lent (il n'est fait qu'une fois), mais le décodage doit être rapide ;
+			\item les schémas symétriques : par exemple, pour des vidéos conférences (et en général pour les applications multimédia en temps réel), les deux schémas doivent être rapides.
+		\end{itemize}
+		
+		On peut également envisager une compression avec une perte, ce qui permet d'obtenir des ratios de compression meilleurs.
+		
+		Il y a deux principaux schémas de compression :
+		
+		\begin{itemize}
+			\item l'encodage entropique (sans perte), et
+			\item l'encodage de source (avec perte).
+		\end{itemize}
+		
+		\subsubsection{Encodage entropique}
+		
+		Il s'agit d'un encodage sans perte. Trois exemples typiques :
+		
+		\begin{itemize}
+			\item run-length encoding : les symboles qui sont répétés sont marqués par un symbole spécial et le nombre d'occurrence ;
+			\item encodage statistique : court codes pour des symboles fréquents ;
+			\item look up table : on définit un tableau de couleurs qui sont utilisées, et encode un pixel en l'indice de sa couleur dans le tableau.
+		\end{itemize}
+		
+		\subsubsection{Source encoding}
+		
+		Il s'agit d'un encodage avec une perte. Trois exemples typiques :
+		
+		\begin{itemize}
+			\item encodage différentiel : des séquences de valeurs sont représentées par la différences avec les précédentes valeurs. Cela est utile si on utilise moins de bits pour encoder. Il y a une perte si la différence est trop grande et ne peut être encodée.
+			
+			On peut rendre ce schéma sans perte si on utilise un encodage à taille variable, mais on perd en décompression.
+			
+			\item transformations du signal, ce qui permet par exemple pour Fourier de récupérer les termes $A_k$, $\omega_k$ et $\phi_k$. Cependant, vu qu'il y en a une infinité, on ne peut qu'en prendre un nombre fini, il y a donc perte.
+			
+			$$\sum_{k = 0}^{\infty / N} A_k sin(\omega_kt + \phi_k)$$
+			
+			Cela s'applique bien pour les fonctions périodiques.
+			
+			\item variante de la Look Up table, où la table pourrait être standardisée, afin de ne pas devoir l'envoyer. Dès lors, les valeurs des pixels sont arrondies aux plus proches valeurs dans la table.
+		\end{itemize}
+		
+		
+		\subsection{L'exemple du JPEG}
+		
+		JPEG (Joint Photographic Experts Group) est un standard pour la compression d'images fixes. Typiquement, on a un ratio de compression de 20:1. C'est un schéma symétrique, avec perte, qui se déroule en 6 étapes.
+				
+		\begin{enumerate}
+			\item l'encodage du pixel est changé, de RGB en YIQ (un canal de luminance et deux de chrominance). Cette conversion se fait à l'aide d'un produit matriciel.
+			
+			$$
+\begin{pmatrix}
+Y \\ 
+I \\ 
+Q
+\end{pmatrix} = \begin{pmatrix}
+. & . & . \\ 
+. & . & . \\ 
+. & . & .
+\end{pmatrix} \begin{array}{c}
+R \\ 
+G \\ 
+B
+\end{array}$$
+			
+			Un des avantages est qu'avec une image en noir et blanc, le canal Y suffit.
+			
+			\dessin{67}
+			
+			Un autre avantage de cet encodage est que les matrices I et Q sont facilement compressibles, qui sont déjà deux fois plus petites en encodant la moyenne de blocs de 4 pixels. On n'effectue pas cette approximation pour la matrice Y car l'oeil humain le remarquerait plus facilement, alors qu'avec I et Q on ne voit pas la différence.
+			
+			On va ensuite soustraire 128 à chaque élément, afin d'avoir 0 comme valeur au milieu. Enfin, on divise la frame en blocs de $8 \times 8$.
+			
+			\item on effectue une transformation en cosinus discrète. La première valeur encodée (0,0), on a une approximation, c'est la moyenne du bloc.
+			
+			\dessin{68}
+			
+			Si on envoie plusieurs valeurs, on peut les utiliser pour assombrir ou éclaircir des zones dans le blocs, par exemple (0,0) donne la moyenne du bloc, (1,0) la moyenne pour la partie supérieure, (0, 1) la moyenne de la partie inférieure.
+			
+			Quand on a le premier coefficient de la série ($A_0$), on a une moyenne de l'ensemble, car le reste du terme n'a pas d'influence ($k = 0$).
+			
+			L'avantage de la transformation en cosinus discrète par rapport à Fourrier est que l'énergie est concentrée à l'origine, les valeurs sont limitées, alors que Fourrier "étale" plus les valeurs.
+			
+			Toutes les valeurs sont approximées, car elles sont réelles, il y a donc une perte.
+			
+			Il en sort des blocs de $8 \times 8$ éléments, les coefficients de la transformation.
+			
+			\item application d'une sorte filtre passe-bas, ce qui entraîne des pertes. On divise la matrice des coefficients DCT par une table de quantification. Cela permet d'avoir une table contenant beaucoup plus de zéros.
+			
+			\dessin{69}
+			
+			Les nombres sont choisis pour mettre le plus de précision sur les coefficients qui auront le plus d'impact sur le rendu pour un oeil humain.
+			
+			Les valeurs seront retrouvées en multipliant la matrice de quantification.
+			
+			\item quantification différentielle ; on remplace les coefficients des blocs (en commençant par le coin supérieur gauche) par la différence par rapport au bloc précédent.
+			
+			\item envoi du pattern en zigzag, ce qui permet de rassembler les zéros à la fin, et donc d'arrêter la transmission à la dernière valeur non nulle, avec un symbole spécial. On pourrait faire de même avec les symboles qui se répètent, en combinant le symbole et le nombre d'occurrences.
+			
+			\dessin{70}
+			
+			\item encodage statistique (encodage de Huffman)
+			
+		\end{enumerate}
+		
+
+		\subsection{MPEG}
+		
+		Le MPEG (Motion Picture Experts Group) est un standard ISO de compression audio et vidéo. Il y a plusieurs variantes : MPEG-1 (qualité CD-rom), MPEG-2 (qualité DVD) et MPEG-4 (video conferencing avec un framerate bas et une résolution moyenne).
+		
+			\subsubsection{MPEG-1}
+			Généralement, un encodeur est utilisé pour l'audio et un autre pour la vidéo, qui seront ensuite multiplexés. Une clock ajoute un timestamp aux deux flux, afin de les synchroniser lors du décodage.
+		
+			\dessin{71}
+		
+			Pour la compression audio, on va utiliser MP3 et exploiter la redondance des deux canaux (dans le cas d'un stream en stéréo).
+		
+			Pour la compression vidéo, on va profiter des redondances spatiale et temporelle. La redondance spatiale est gérée comme pour JPEG.
+		
+			Pour la redondance temporelle, avant d'encoder, on va d'abord analyser les images et voir s'il y a des similitudes entre elles, et ce sans se limiter à la taille des blocs. Lors du décodage, il suffira alors de dupliquer la zone de pixels, ou bien de corriger un bloc (plus ou moins lumineux, etc).
+		
+			On définit différents types de frame :% [4-28]
+		
+			\begin{enumerate}
+				\item I frames (Intracoded) : elles contiennent des images encodées au format JPEG. Elles apparaissent périodiquement à la sortie, pour les changements de scènes, mais aussi pour ne pas propager des erreurs ou d'éviter le cas où il y a une perte d'une I-frame, ou bien lorsqu'il y a des sauts dans la vidéo (fast forward, rewind).
+			
+				\item P frames (Predictive) : elles contiennent les différences bloc par bloc par rapport à la frame précédente. On cherche un macrobloc (Y, I, Q) dans la frame précédente qui est égale ou légèrement différente, et on encode l'offset en position et en différente.
+			
+				\item B frames (Bidirectional) : idem que les frames P, mais on cherche dans la prochaine frame I ou la prochaine frame P.
+			
+				\item D frames (DC-codec) : frames qui contiennent les moyennes des blocs, et qui permettent d'effectuer des fast forward (à basse résolution).
+			\end{enumerate}	
+			
+			\dessinS{131}{.65}
+		
+			Les ordres d'encodage et de décodage ne sont pas les mêmes que l'ordre des frames, afin de pouvoir décoder dès qu'on a les données.
+		
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline 
+Profil & I & B & B & P & B & B & I \\ 
+\hline 
+Ordre & 1 & 3 & 4 & 2 & 6 & 7 & 5 \\ 
+\hline 
+\end{tabular}
+\end{center} 
+		
+			Une B-frame engendre un encodage et un décodage plus difficile pour le CPU, mais sont moins lourdes.
+		
+			Le network doit être adapté au profil ; la perte d'une I-frame aura un plus grand impact qu'une B-frame.
+		
+			\subsubsection{MPEG-2}
+			
+			Le principe de fonctionnement est similaire à celui de MPEG-1. On a une meilleur qualité ; on utilise des blocs de $10 \times 10$ coefficients de DCT, au lieu de $8 \times 8$.
+			
+			On a plusieurs niveaux de résolution, le plus bas correspond à du MPEG-1. Il y a également plusieurs profils (par exemple un sans frames B, pour simplifier l'encodage).
+			
+			Généralement, le débit tourne dans les 3-4Mbps, mais on peut aller jusqu'à 100Mbps (HDTV).
+		
+		% 9 - 11 - 2011
+	
+	\section{Streaming}			
+		\subsection{Streaming audio et vidéo stocké}
+		
+		Le streaming au niveau applicatif tente de tirer le plus du service de best effort. On a plusieurs techniques :
+		
+		\begin{itemize}
+			\item un buffering côté client,
+			\item l'utilisation d'UDP et de TCP, et
+			\item des encodages multiples de médias.
+		\end{itemize}
+		
+		Un media player a pour but le retrait du jitter (délais variables), la décompression, la gestion d'erreurs et d'offrir une interface graphique avec des contrôles pour l'interactivité.
+		
+		On a différentes approches pour gérer le streaming :
+		
+		\begin{enumerate}
+			\item Approche simple : les fichiers audio et vidéo sont stockés dans des fichiers, qui sont transférés comme des objets HTTP. Ils sont donc reçus entièrement par le client, puis passés au lecteur.
+			
+			\dessin{72}
+			
+			Ici, l'audio et la vidéo ne sont pas streamés ; il n'y a pas de streaming car on doit tout transférer pour pouvoir lire le fichier. De plus, il peut y avoir un long délai avant d'avoir le fichier complet.
+			
+			\item Approche streaming : le browser récupère un metafile, qu'il passe au lecteur. Ce fichier contient toutes les informations nécessaires pour qu'il soit streamé en HTTP. Le lecteur contacte ensuite le serveur, qui stream les flux audio et vidéo au lecteur.
+			
+			\dessin{73}
+						
+			\item Approche streaming sans HTTP : cela permet l'utilisation de protocoles non HTTP entre le serveur et le lecteur. On a alors le choix entre UDP ou TCP pour l'étape 3.
+			
+			\dessin{74}
+			
+			HTTP est juste utilisé pour récupérer le meta file, après c'est un protocole dédié qui prend le relais.
+		
+		\end{enumerate}
+		
+			\subsubsection{Buffering client}
+		
+			On va introduire un délai de playout, qui va permettre de compenser le délai du réseau et le jitter.
+			
+			\dessin{75}
+		
+			\dessin{76}
+		
+			\subsubsection{TCP ou UDP}
+			
+			%Avec UDP,
+			
+			%\begin{itemize}
+			%	\item le serveur envoi à un débit approprié pour le client ; souvent, le débit d'envoi sera égal au débit d'encodage, soit débit constant. Dès lors, le débit de remplissage du buffer est un débit constant moins la perte de paquet.
+				
+				%\item on a un court playout (2-5 secondes), pour retirer le jitter du réseau, et
+				%\item on a une récupération d'erreur quand le temps le permet.
+				%\end{itemize}
+			%\end{itemize}
+			
+			%Avec TCP,
+			
+			%\begin{itemize}
+			%	\item on envoi au débit le plus grand possible, le débit de remplissage du buffer va donc fluctuer à cause du contrôle de congestion de TCP.
+			%	\item le délai de playout est plus grand qu'avec UDP, vu qu'on a un débit de remplissage plus bas, et
+			%	\item HTTP et TCP passe mieux à travers les firewalls qu'UDP.
+			%\end{itemize}
+		
+			UDP permet de mieux gérer la récupération d'erreur (au niveau applicatif). Avec un buffer, on dispose d'un budget temps qui permet d'attendre éventuellement qu'un paquet manquant arrive. Avec TCP, dès qu'un manquement est détecté, la retransmission aura lieu systématiquement.
+		
+			UDP envoie au rythme de l'encodage, TCP ne va faire qu'essayer mais sera limité (slow start, congestion avoidance, receiver buffer, etc) ; il y a énormément de fluctuations dans le remplissage du buffer. Du coup, plus il y a de fluctuations, plus il faut un grand playout buffer, alors qu'avec UDP ce n'est pas nécessaire vu qu'il n'y a pas de variations de débit à compenser.
+		
+			Par contre, TCP passe mieux à travers les firewalls et les périphériques réseaux, qui pourraient filtrer les connexions UDP.
+			
+			\subsubsection{Encodages différents}
+			
+			Le fait d'avoir plusieurs encodages, avec des débits différents, d'un même média permet de s'adapter au débit de réception des clients.
+		
+		
+		\subsection{RTSP - Real-Time Streaming Protocol}
+		
+		HTTP n'est pas conçu pour le contenu multimédia et ne dispose pas de commandes pour effectuer des avances rapides, etc.
+		
+		RTSP est un protocole client-serveur au niveau applicatif, qui permet le contrôle (rewind, pause, etc). Il ne définit pas
+		
+		\begin{itemize}
+			\item comment les flux audio et vidéo sont encapsulés ;
+			\item la manière de transporter les données (TCP ou UDP);
+			\item les buffers du lecteur.
+		\end{itemize}
+		
+		RSTP utilise le contrôle out-of-band, comme FTP ; ce dernier utilise deux connexions TCP : une pour le transfert de fichier en lui-même, et une autre (out-of-band) qui permet d'envoyer des commandes FTP (se déplacer dans l'arborescence du système, copier un fichier, etc).
+		
+		Cette séparation est faite car TCP pourrait toujours fixer le débit à un niveau très bas (à cause de congestion). Du coup, toutes les données à transférer seront bufferisées, de même que les commandes. L'autre connexion permet de ne pas bloquer immédiatement les commandes ; généralement elles sont de taille très réduite.
+		
+		RTSP utilise la même technique, si ce n'est qu'on n'est pas limité à TCP.
+		
+		
+			\subsubsection{Metafile}
+			
+			Lors de la lecture d'un streaming, un metafile est communiqué au web browser, qui sera ensuite envoyé au lecteur. Ce dernier établit alors une connexion de contrôle RTSP.
+			
+			Pour une session, le meta-file peut définir plusieurs pistes audio, avec des encodages différents et avec une source par encodage. Il en est de même pour le flux vidéo.
+			
+			\dessinS{77}{.6}
