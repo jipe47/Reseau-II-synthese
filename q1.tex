@@ -50,16 +50,16 @@
 		\subsection{IGMP - Internet Group Management Protocol}
 		IGMP est un protocole avec plusieurs instances dans un réseau, et établissant un dialogue entre un hôte et un routeur terminal. Lorsqu'un routeur sait qu'il y a des membres dans un groupe, il initialise lui-même les dialogues nécessaires avec les autres routeurs.
 		
-		Ici, le routeur a l'initiative : il broadcast sur le réseau périodiquement un message indiquant les groupes disponibles. Il sait juste s'il y a des personnes dans le groupe ou non ; il ne sait pas combien il y a de membres.
+		Ici, le routeur a l'initiative : il broadcast sur le réseau périodiquement un message demandant s'il y a des hôtes intéressés par un groupe.
 	
-		Les hôtes répondent quand ils sont intéressés. Pour éviter un trafic trop élevé,
+		Les hôtes répondent quand ils sont intéressés, et spécifient le ou les groupes multicast auxquels ils souhaitent appartenir. Pour éviter un trafic trop élevé,
 	
 		\begin{itemize}
 			\item ils répondent après un temps de réponse choisi aléatoirement, afin d'éviter d'avoir un flux massif de messages en même temps
 			\item les réponses sont en broadcast, du coup les autres hôtes savent qu'il n'est pas nécessaire de répondre.
 		\end{itemize}
 	
-		Au final, les hôtes ne connaissent pas les identités de tous les hôtes intéressés, mais ils savent qu'il y en a au moins un.
+		Au final, les hôtes ne connaissent pas les identités de tous les hôtes intéressés, mais ils savent qu'il y en a au moins un. Idem pour le routeur : il sait juste s'il y a des personnes dans le groupe ou non.
 	
 		% ; il répondent après un temps de réponse choisi aléatoirement : cela évite d'avoir un flux massif de message en même temps, mais aussi la réponse est en broadcast (les autres savent qu'il y a un dialogue en cours, et attendent avant d'eux-même répondre).
 	
